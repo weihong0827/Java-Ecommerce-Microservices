@@ -2,11 +2,9 @@ package tech.qiuweihong.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import tech.qiuweihong.controller.AddressController;
 import tech.qiuweihong.model.AddressDO;
 import tech.qiuweihong.mapper.AddressMapper;
 import tech.qiuweihong.service.AddressService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

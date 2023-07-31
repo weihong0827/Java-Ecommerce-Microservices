@@ -20,7 +20,7 @@ import tech.qiuweihong.service.AddressService;
  * @since 2023-07-27
  */
 @RestController
-@Api(tags = "AddressController", description = "Address management")
+@Api(tags = "AddressController")
 @RequestMapping("/api/address/v1")
 public class AddressController {
 

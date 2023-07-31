@@ -1,7 +1,6 @@
 package tech.qiuweihong.service;
 
 import tech.qiuweihong.model.AddressDO;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>

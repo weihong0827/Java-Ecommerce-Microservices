@@ -1,0 +1,24 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: user-service
+
+  # Database Configuration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/User?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: postgres
+    password: xiqNDNRBdZCu99Bvgg3F
+
+
+# Configure MyBatis-Plus to print SQL logs
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above
+logging:
+  level:
+    root: INFO

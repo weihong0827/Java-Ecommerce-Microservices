@@ -24,6 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.boot.version>2.3.3.RELEASE</spring.boot.version>
         <spring.cloud.version>Hoxton.SR8</spring.cloud.version>
+        <postgresql.version>42.2.18</postgresql.version>
         <alibaba.cloud.version>2.2.1.RELEASE</alibaba.cloud.version>
         <mybatisplus.boot.starter.version>3.4.0</mybatisplus.boot.starter.version>
         <lombok.version>1.18.16</lombok.version>
@@ -71,6 +72,12 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatisplus.boot.starter.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
 
             <!--https://mvnrepository.com/artifact/org.projectlombok/lombok/1.18.16-->
             <dependency>
@@ -96,7 +103,6 @@
                 <artifactId>commons-codec</artifactId>
                 <version>${commons.codec.version}</version>
             </dependency>
-
 
 
             <!--API Documentation-->

@@ -19,8 +19,8 @@
 
 <dependencies>
     <dependency>
-        <groupId>net.xdclass</groupId>
-        <artifactId>xdclass-common</artifactId>
+        <groupId>tech.qiuweihong</groupId>
+        <artifactId>common</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
 </dependencies>

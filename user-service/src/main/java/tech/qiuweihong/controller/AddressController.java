@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+import tech.qiuweihong.Exception.BizException;
+import tech.qiuweihong.enums.BizCodeEnum;
+import tech.qiuweihong.model.AddressDO;
 import tech.qiuweihong.service.AddressService;
+import tech.qiuweihong.utils.JsonData;
 
 /**
  * <p>
@@ -29,7 +33,8 @@ public class AddressController {
     @GetMapping("/find/{address_id}")
     @ApiOperation(value = "Get address details")
     public Object details(@PathVariable("address_id") Long id){
-        return addressService.detail(id);
+        AddressDO addressDo = addressService.detail(id);
+        return JsonData.buildSuccess(addressDo);
 
     }
 

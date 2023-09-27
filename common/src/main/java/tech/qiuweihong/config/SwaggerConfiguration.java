@@ -29,6 +29,18 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.ant("/api/**"))
                 .build();
     }
+    @Bean
+    public Docket adminApiDoc(){
+        return new Docket(DocumentationType.OAS_30)
+                .groupName("Admin API Documentation")
+                .pathMapping("/")
+                .enable(true)
+                .apiInfo(getAPIInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("tech.qiuweihong"))
+                .paths(PathSelectors.ant("/admin/**"))
+                .build();
+    }
     private ApiInfo getAPIInfo(){
         return new ApiInfoBuilder()
                 .title("Ecommerce Platform API Documentation")

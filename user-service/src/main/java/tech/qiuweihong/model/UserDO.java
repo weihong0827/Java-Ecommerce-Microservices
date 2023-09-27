@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("user")
+@TableName("users")
 public class UserDO implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -50,7 +50,8 @@ public class UserController {
     @PostMapping("login")
     private JsonData login(@ApiParam("Login Object") @RequestBody UserLoginRequest loginRequest){
         JsonData jsonData = userService.login(loginRequest);
-        return JsonData.buildSuccess("Login successful");
+        return jsonData;
+
     }
 
 }

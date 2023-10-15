@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.SendCodeEnum;
+import tech.qiuweihong.model.LoginUser;
 import tech.qiuweihong.model.UserDO;
 import tech.qiuweihong.mapper.UserMapper;
 import tech.qiuweihong.request.UserLoginRequest;
@@ -18,6 +19,7 @@ import tech.qiuweihong.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import tech.qiuweihong.utils.CommonUtils;
+import tech.qiuweihong.utils.JWTUtils;
 import tech.qiuweihong.utils.JsonData;
 
 import java.util.Date;
@@ -100,8 +102,11 @@ public class UserServiceImpl implements UserService {
         if (!userEnteredPwdEncrypted.equals(encryptedPwd)){
             return JsonData.buildResult(BizCodeEnum.ACCOUNT_PWD_ERROR);
         }
+        LoginUser loginUser = new LoginUser();
+        BeanUtils.copyProperties(userDO,loginUser);
+        String token = JWTUtils.GenerateToken(loginUser);
 
-        return JsonData.buildSuccess();
+        return JsonData.buildSuccess(token);
 
     }
 

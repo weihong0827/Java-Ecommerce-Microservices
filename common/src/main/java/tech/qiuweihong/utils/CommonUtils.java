@@ -1,11 +1,18 @@
 package tech.qiuweihong.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
+import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 public class CommonUtils {
     /**
      * 获取ip
@@ -91,5 +98,18 @@ public class CommonUtils {
             code += source.charAt((int)(Math.random()*source.length()));
         }
         return code;
+    }
+
+    public static void sendJsonMessage(HttpServletResponse response, Object obj){
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.setContentType("application/json; charset=utf-8");
+        try(PrintWriter writer = response.getWriter()){
+            writer.print(objectMapper.writeValueAsString(obj));
+            response.flushBuffer();
+
+        }catch (Exception e){
+            log.warn("Returning Exception {}",e);
+
+        }
     }
 }

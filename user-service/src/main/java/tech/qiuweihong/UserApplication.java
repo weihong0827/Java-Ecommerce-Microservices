@@ -19,6 +19,7 @@ public class UserApplication {
         System.setProperty("MAIL_HOST", dotenv.get("MAIL_HOST"));
         System.setProperty("MAIL_USERNAME", dotenv.get("MAIL_USERNAME"));
         System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
+        System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
         SpringApplication.run(UserApplication.class,args);
     }
 

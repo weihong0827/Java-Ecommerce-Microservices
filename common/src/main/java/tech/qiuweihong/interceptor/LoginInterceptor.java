@@ -37,9 +37,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             loginUser.setName(name);
             loginUser.setMail(mail);
             threadLocal.set(loginUser);
-
-
-
             return true;
 
         }

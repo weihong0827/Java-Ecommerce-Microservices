@@ -1,7 +1,9 @@
 package tech.qiuweihong.service;
 
-import tech.qiuweihong.model.AddressDO;
 import tech.qiuweihong.request.AddressAddRequest;
+import tech.qiuweihong.vo.AddressVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,7 +15,11 @@ import tech.qiuweihong.request.AddressAddRequest;
  */
 
 public interface AddressService {
-    AddressDO detail(Long id);
+    AddressVO detail(Long id);
 
     void add(AddressAddRequest addressAddRequest);
+
+    int delete(Long id);
+
+    List<AddressVO> list();
 }

@@ -68,7 +68,7 @@ public class CaptchaController {
             return notifyService.sendCode(SendCodeEnum.USER_REGISTER,mail);
 
         }else{
-            return JsonData.buildResult(BizCodeEnum.CODE_CAPTCHA_ERROR);
+            return JsonData.buildResult(BizCodeEnum.CODE_CAPTCHA);
         }
     }
 

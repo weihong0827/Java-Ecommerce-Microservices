@@ -37,7 +37,7 @@ public class UserController {
     @PostMapping("/avatar")
     private JsonData uploadAvatar(@ApiParam(value = "file upload",required = true) @RequestPart("file")MultipartFile file){
         String url = fileService.uploadFile(file);
-        return url!= null ? JsonData.buildSuccess(url) : JsonData.buildResult(BizCodeEnum.FILE_UPLOAD_USER_AVATAR_FAIL);
+        return url!= null ? JsonData.buildSuccess(url) : JsonData.buildResult(BizCodeEnum.FILE_UPLOAD_USER_IMG_FAIL);
 
     }
     @ApiOperation(value = "register", notes = "register")

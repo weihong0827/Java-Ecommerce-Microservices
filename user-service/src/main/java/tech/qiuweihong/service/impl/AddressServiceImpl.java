@@ -10,12 +10,14 @@ import tech.qiuweihong.mapper.UserMapper;
 import tech.qiuweihong.model.AddressDO;
 import tech.qiuweihong.mapper.AddressMapper;
 import tech.qiuweihong.model.LoginUser;
-import tech.qiuweihong.model.UserDO;
 import tech.qiuweihong.request.AddressAddRequest;
 import tech.qiuweihong.service.AddressService;
 import org.springframework.stereotype.Service;
+import tech.qiuweihong.vo.AddressVO;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,8 +35,17 @@ public class AddressServiceImpl implements AddressService{
     @Autowired
     private UserMapper userMapper;
     @Override
-    public AddressDO detail(Long id) {
-        return addressMapper.selectOne(new QueryWrapper<AddressDO>().eq("user_id",id));
+    public AddressVO detail(Long id) {
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        AddressDO addressDO = addressMapper.selectOne(new QueryWrapper<AddressDO>().eq("id",id).eq("user_id",loginUser.getId()));
+
+        if (addressDO==null){
+            return null;
+        }
+        AddressVO addressVO = new AddressVO();
+        BeanUtils.copyProperties(addressDO,addressVO);
+
+        return addressVO;
     }
 
     @Override
@@ -57,5 +68,24 @@ public class AddressServiceImpl implements AddressService{
         int row = addressMapper.insert(addressDO);
         log.info("added address: row={}, data={}",row,addressDO);
 
+    }
+
+    @Override
+    public int delete(Long id) {
+
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        return addressMapper.delete(new QueryWrapper<AddressDO>().eq("id",id).eq("user_id",loginUser.getId()));
+    }
+
+    @Override
+    public List<AddressVO> list() {
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        List<AddressDO> list = addressMapper.selectList(new QueryWrapper<AddressDO>().eq("user_id",loginUser.getId()));
+        List<AddressVO> addressVOList = list.stream().map(obj->{
+            AddressVO addressVO = new AddressVO();
+            BeanUtils.copyProperties(obj,addressVO);
+            return addressVO;
+        }).collect(Collectors.toList());
+        return addressVOList ;
     }
 }

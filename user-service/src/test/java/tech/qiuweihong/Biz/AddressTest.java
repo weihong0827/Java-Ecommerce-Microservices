@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import tech.qiuweihong.UserApplication;
 import tech.qiuweihong.model.AddressDO;
 import tech.qiuweihong.service.AddressService;
+import tech.qiuweihong.vo.AddressVO;
 
 @SpringBootTest(classes = {UserApplication.class})
 @RunWith(SpringRunner.class)
@@ -20,8 +21,8 @@ public class AddressTest {
 
     @Test
     public void testAddressDetail(){
-        AddressDO addressDO = addressService.detail(1L);
-        log.info("addressDO:{}",addressDO);
-        Assert.assertNotNull(addressDO);
+        AddressVO addressVO = addressService.detail(1L);
+        log.info("addressDO:{}",addressVO);
+        Assert.assertNotNull(addressVO);
     }
 }

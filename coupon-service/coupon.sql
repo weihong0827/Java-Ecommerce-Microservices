@@ -4,7 +4,7 @@ CREATE TABLE coupon (
                         category VARCHAR(11),
                         publish VARCHAR(11),
                         coupon_img VARCHAR(524),
-                        coupon_title VARCHAR(128),
+                        coupon_title VARCHAR(256),
                         price DECIMAL(16,2),
                         user_limit INT,
                         start_time TIMESTAMP,

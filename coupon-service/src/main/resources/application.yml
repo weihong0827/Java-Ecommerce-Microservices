@@ -1,5 +1,5 @@
 server:
-  port: 9001
+  port: 9002
 
 spring:
   application:
@@ -8,7 +8,7 @@ spring:
   # Database Configuration
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DATABASE_URL}
+    url: jdbc:postgresql://localhost:5432/Coupon?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 
@@ -17,18 +17,6 @@ spring:
     port: ${REDIS_PORT}
     password: ${REDIS_PASSWORD}
 
-  mail:
-    host: ${MAIL_HOST}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-        mail:
-            starttls:
-                enable: true
-                required: true
-            ssl:
-                enable: true
-            default-encoding: UTF-8
 
 
 
@@ -36,12 +24,6 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-# configure aws s3
-aws:
-  s3:
-    bucket-name: java-ecommerce
-    region: ap-southeast-1
 
 
 # Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above

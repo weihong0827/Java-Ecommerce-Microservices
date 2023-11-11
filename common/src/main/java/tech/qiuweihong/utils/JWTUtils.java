@@ -18,6 +18,7 @@ public class JWTUtils {
         if (user == null){
             throw new NullPointerException("No login user");
         }
+        log.info("generating token for user: {}",user.getId());
         String token = Jwts.builder()
                 .setSubject(SUBJECT)
                 .claim("id",user.getId())

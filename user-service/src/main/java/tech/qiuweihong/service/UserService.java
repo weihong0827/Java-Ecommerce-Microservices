@@ -3,6 +3,7 @@ package tech.qiuweihong.service;
 import tech.qiuweihong.request.UserLoginRequest;
 import tech.qiuweihong.request.UserRegisterRequest;
 import tech.qiuweihong.utils.JsonData;
+import tech.qiuweihong.vo.UserVO;
 
 /**
  * <p>
@@ -15,5 +16,7 @@ import tech.qiuweihong.utils.JsonData;
 public interface UserService {
     JsonData register(UserRegisterRequest registerRequest);
     JsonData login(UserLoginRequest userLoginRequest);
+
+    UserVO findUserDetail();
 
 }

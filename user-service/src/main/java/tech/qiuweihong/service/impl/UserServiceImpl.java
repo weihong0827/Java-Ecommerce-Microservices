@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.StringUtils;
-import org.mockito.internal.util.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.SendCodeEnum;
+import tech.qiuweihong.interceptor.LoginInterceptor;
 import tech.qiuweihong.model.LoginUser;
 import tech.qiuweihong.model.UserDO;
 import tech.qiuweihong.mapper.UserMapper;
@@ -16,11 +16,11 @@ import tech.qiuweihong.request.UserLoginRequest;
 import tech.qiuweihong.request.UserRegisterRequest;
 import tech.qiuweihong.service.NotifyService;
 import tech.qiuweihong.service.UserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import tech.qiuweihong.utils.CommonUtils;
 import tech.qiuweihong.utils.JWTUtils;
 import tech.qiuweihong.utils.JsonData;
+import tech.qiuweihong.vo.UserVO;
 
 import java.util.Date;
 
@@ -108,6 +108,16 @@ public class UserServiceImpl implements UserService {
 
         return JsonData.buildSuccess(token);
 
+    }
+
+    @Override
+    public UserVO findUserDetail() {
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        log.info(loginUser.getMail());
+        UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>().eq("id",loginUser.getId()));
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(userDO,userVO);
+        return userVO;
     }
 
     private void initNewUserData(UserDO userDO){

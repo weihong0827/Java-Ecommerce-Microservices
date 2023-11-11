@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.spring.web.json.Json;
 import tech.qiuweihong.request.UserLoginRequest;
 import tech.qiuweihong.request.UserRegisterRequest;
 import tech.qiuweihong.service.FileService;
 import tech.qiuweihong.service.UserService;
 import tech.qiuweihong.utils.JsonData;
 import tech.qiuweihong.enums.BizCodeEnum;
+import tech.qiuweihong.vo.UserVO;
 
 
 /**
@@ -46,6 +46,13 @@ public class UserController {
         JsonData jsonData = userService.register(registerRequest);
         return jsonData;
     }
+    @ApiOperation("User details")
+    @GetMapping("detail")
+    public JsonData detail(){
+        UserVO userVo = userService.findUserDetail();
+        return JsonData.buildSuccess(userVo);
+    }
+
     @ApiOperation(value="login",notes = "Login")
     @PostMapping("login")
     private JsonData login(@ApiParam("Login Object") @RequestBody UserLoginRequest loginRequest){

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import tech.qiuweihong.Exception.BizException;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.CouponCategoryEnum;
@@ -85,6 +87,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public JsonData claimCoupon(long couponId, CouponCategoryEnum category) {
         String uuid = CommonUtils.generateUUID();
         String lockKey = "lock:coupon:"+couponId;

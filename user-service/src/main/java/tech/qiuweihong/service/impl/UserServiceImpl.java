@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         log.info(userDO.toString());
 
         int rows = userMapper.insert(userDO);
-        log.info("rows:{},register success{}",rows,userDO.toString());
+        log.info("rows:{},register success{}",rows, userDO);
 
         // initalize data and give new user perks
         initNewUserData(userDO);
@@ -131,10 +131,7 @@ public class UserServiceImpl implements UserService {
     private boolean checkUnique(String email){
         QueryWrapper<UserDO> queryWrapper = new QueryWrapper<UserDO>().eq("mail",email);
         UserDO userDO = userMapper.selectOne(queryWrapper);
-        if (userDO != null){
-            return false;
-        }
-        return true;
+        return userDO == null;
 
     }
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.UUID;
@@ -61,10 +62,10 @@ public class CommonUtils {
     public static String MD5(String data)  {
         try {
             java.security.MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] array = md.digest(data.getBytes("UTF-8"));
+            byte[] array = md.digest(data.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte item : array) {
-                sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
+                sb.append(Integer.toHexString((item & 0xFF) | 0x100), 1, 3);
             }
 
             return sb.toString().toUpperCase();

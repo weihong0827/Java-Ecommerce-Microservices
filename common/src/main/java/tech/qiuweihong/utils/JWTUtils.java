@@ -9,7 +9,7 @@ import tech.qiuweihong.model.LoginUser;
 import java.util.Date;
 @Slf4j
 public class JWTUtils {
-    private static final long EXPIRE = 60 * 1000 * 60 * 24 * 7 *10;
+    private static final long EXPIRE = 60L * 1000 * 60 * 24 * 7 *10;
     private static final String SECRET = System.getProperty("JWT_SECRET");
     private static final String TOKEN_PREFIX = "weihongecommerce";
     private static final String SUBJECT = "weihong";

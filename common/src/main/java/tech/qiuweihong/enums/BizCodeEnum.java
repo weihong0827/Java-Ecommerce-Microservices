@@ -99,12 +99,12 @@ public enum BizCodeEnum {
     FILE_UPLOAD_USER_IMG_FAIL(600101,"用户头像文件上传失败");
 
     @Getter
-    private String message;
+    private final String message;
 
     @Getter
-    private int code;
+    private final int code;
 
-    private BizCodeEnum( int code,String message){
+    BizCodeEnum(int code, String message){
         this.message = message;
         this.code = code;
     }

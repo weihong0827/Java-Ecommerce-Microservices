@@ -42,6 +42,12 @@ public class ProductServiceImpl  implements ProductService {
 
     }
 
+    @Override
+    public ProductVO getProduct(long id) {
+        ProductDO productDO = productMapper.selectById(id);
+        return beanProcess(productDO);
+    }
+
     private ProductVO beanProcess(ProductDO productDO){
         ProductVO productVO = new ProductVO();
         BeanUtils.copyProperties(productDO,productVO);

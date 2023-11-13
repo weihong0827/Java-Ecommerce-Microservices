@@ -9,10 +9,12 @@ import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class MyBatisPlusGenerator {
 
     public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.load();
         //1. 全局配置
         GlobalConfig config = new GlobalConfig();
         // 是否支持AR模式
@@ -48,8 +50,8 @@ public class MyBatisPlusGenerator {
         dsConfig.setDbType(DbType.POSTGRE_SQL)
                 .setDriverName("org.postgresql.Driver")
                 .setUrl("jdbc:postgresql://localhost:5432/Coupon?useSSL=false")
-                .setUsername("postgres")
-                .setPassword("xiqNDNRBdZCu99Bvgg3F");
+                .setUsername(dotenv.get("DATABASE_USERNAME"))
+                .setPassword(dotenv.get("DATABASE_PASSWORD"));
 
         //3. 策略配置globalConfiguration中
         StrategyConfig stConfig = new StrategyConfig();

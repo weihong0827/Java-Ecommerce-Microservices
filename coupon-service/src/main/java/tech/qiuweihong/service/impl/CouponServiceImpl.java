@@ -24,6 +24,7 @@ import tech.qiuweihong.mapper.CouponRecordMapper;
 import tech.qiuweihong.model.CouponDO;
 import tech.qiuweihong.model.CouponRecordDO;
 import tech.qiuweihong.model.LoginUser;
+import tech.qiuweihong.request.NewUserCouponRequest;
 import tech.qiuweihong.service.CouponService;
 import tech.qiuweihong.utils.CommonUtils;
 import tech.qiuweihong.utils.JsonData;
@@ -120,6 +121,22 @@ public class CouponServiceImpl implements CouponService {
         }finally {
             rlock.unlock();
         }
+        return JsonData.buildSuccess();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public JsonData initNewUserCoupon(NewUserCouponRequest newUserCouponRequest) {
+        LoginUser loginUser = new LoginUser();
+        loginUser.setId((int) newUserCouponRequest.getUserId());
+        loginUser.setName(newUserCouponRequest.getName());
+        LoginInterceptor.threadLocal.set(loginUser);
+
+        List<CouponDO> couponDOList = couponMapper.selectList(new QueryWrapper<CouponDO>().eq("category",CouponCategoryEnum.NEW_USER.name()));
+        for (CouponDO couponDO:couponDOList){
+            this.claimCoupon(couponDO.getId(),CouponCategoryEnum.NEW_USER);
+        }
+
         return JsonData.buildSuccess();
     }
 

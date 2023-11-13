@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import springfox.documentation.spring.web.json.Json;
 import tech.qiuweihong.enums.CouponCategoryEnum;
+import tech.qiuweihong.request.NewUserCouponRequest;
 import tech.qiuweihong.service.CouponService;
 import tech.qiuweihong.utils.JsonData;
 
@@ -43,6 +44,14 @@ public class CouponController {
             @PathVariable("coupon_id") long couponId
     ){
         return couponService.claimCoupon(couponId, CouponCategoryEnum.PROMOTION);
+    }
+
+    @ApiOperation("RPC-New user registration claim coupon")
+    @PostMapping("/new_user_coupon")
+    public JsonData claimNewUserCoupon(@ApiParam("User Object") @RequestBody NewUserCouponRequest newUserCouponRequest){
+        JsonData jsonData = couponService.initNewUserCoupon(newUserCouponRequest);
+        return jsonData;
+
     }
 
 }

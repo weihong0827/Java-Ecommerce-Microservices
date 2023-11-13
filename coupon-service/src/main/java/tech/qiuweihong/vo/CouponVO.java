@@ -14,7 +14,6 @@ public class CouponVO {
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**

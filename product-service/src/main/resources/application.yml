@@ -1,0 +1,33 @@
+server:
+  port: 9003
+
+spring:
+  application:
+    name: product-service
+
+  # Database Configuration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/Product?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+
+
+
+
+# Configure MyBatis-Plus to print SQL logs
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+# Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above
+
+logging:
+  level:
+    root: INFO

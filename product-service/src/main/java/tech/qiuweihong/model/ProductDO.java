@@ -45,12 +45,12 @@ public class ProductDO implements Serializable {
     /**
      * Old Price
      */
-    private BigDecimal oldPrice;
+    private BigDecimal oldAmount;
 
     /**
      * New Price
      */
-    private BigDecimal price;
+    private BigDecimal amount;
 
     /**
      * Stock

@@ -1,5 +1,6 @@
 package tech.qiuweihong.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import tech.qiuweihong.vo.ProductVO;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,12 @@ public class ProductServiceImpl  implements ProductService {
     public ProductVO getProduct(long id) {
         ProductDO productDO = productMapper.selectById(id);
         return beanProcess(productDO);
+    }
+
+    @Override
+    public List<ProductVO> findProductByIdBatch(List<Long> productIdList) {
+        List<ProductDO>productDOList = productMapper.selectList(new QueryWrapper<ProductDO>().in("id",productIdList));
+        return productDOList.stream().map(obj->beanProcess(obj)).collect(Collectors.toList());
     }
 
     private ProductVO beanProcess(ProductDO productDO){

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import tech.qiuweihong.request.CartItemRequest;
 import tech.qiuweihong.service.CartService;
 import tech.qiuweihong.utils.JsonData;
+import tech.qiuweihong.vo.CartVO;
+
+import java.util.List;
 
 @Api("Shopping cart")
 @RestController
@@ -29,5 +32,12 @@ public class CartController {
     public JsonData clearCart(){
         cartService.clear();
         return JsonData.buildSuccess();
+    }
+
+    @ApiOperation("View cart")
+    @GetMapping("/")
+    public JsonData viewCart(){
+        CartVO cartVO = cartService.getCart();
+        return JsonData.buildSuccess(cartVO);
     }
 }

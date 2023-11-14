@@ -5,6 +5,7 @@ import tech.qiuweihong.model.ProductDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import tech.qiuweihong.vo.ProductVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,4 +22,6 @@ public interface ProductService  {
     Map<String, Object> listProducts(int page, int size);
 
     ProductVO getProduct(long id);
+
+    List<ProductVO> findProductByIdBatch(List<Long> productIdList);
 }

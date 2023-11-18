@@ -1,14 +1,14 @@
 server:
-  port: 9002
+  port: 9004
 
 spring:
   application:
-    name: coupon-service
+    name: order-service
 
   # Database Configuration
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/Coupon?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:postgresql://localhost:5432/Order?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 

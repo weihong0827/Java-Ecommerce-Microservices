@@ -1,3 +1,5 @@
+package tech.qiuweihong;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

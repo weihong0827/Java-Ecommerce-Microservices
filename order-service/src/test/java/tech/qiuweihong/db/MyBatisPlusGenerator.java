@@ -22,7 +22,7 @@ public class MyBatisPlusGenerator {
                 // 作者
                 .setAuthor("Qiu Weihong")
                 // 生成路径，最好使用绝对路径，window路径是不一样的
-                .setOutputDir("/Users/iceridge/IdeaProjects/ecommerce/coupon-service/src/main/java")
+                .setOutputDir("/Users/iceridge/IdeaProjects/ecommerce/order-service/src/main/java")
                 // 文件覆盖
                 .setFileOverride(true)
                 // 主键策略
@@ -49,7 +49,7 @@ public class MyBatisPlusGenerator {
         // 设置数据库类型
         dsConfig.setDbType(DbType.POSTGRE_SQL)
                 .setDriverName("org.postgresql.Driver")
-                .setUrl("jdbc:postgresql://localhost:5432/Coupon?useSSL=false")
+                .setUrl("jdbc:postgresql://localhost:5432/Order?useSSL=false")
                 .setUsername(dotenv.get("DATABASE_USERNAME"))
                 .setPassword(dotenv.get("DATABASE_PASSWORD"));
 
@@ -68,7 +68,7 @@ public class MyBatisPlusGenerator {
                 .setRestControllerStyle(true)
 
                 // 生成的表, 支持多表一起生成，以数组形式填写
-                .setInclude("coupon","coupon_record");
+                .setInclude("product_order","product_order_item");
 
         //4. 包名策略配置
         PackageConfig pkConfig = new PackageConfig();

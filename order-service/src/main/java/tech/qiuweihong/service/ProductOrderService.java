@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author Qiu Weihong
  * @since 2023-11-18
  */
-public interface ProductOrderService extends IService<ProductOrderDO> {
+public interface ProductOrderService {
 
 }

@@ -1,5 +1,6 @@
 package tech.qiuweihong.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import tech.qiuweihong.model.ProductOrderDO;
 import tech.qiuweihong.mapper.ProductOrderMapper;
 import tech.qiuweihong.service.ProductOrderService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  * @since 2023-11-18
  */
 @Service
-public class ProductOrderServiceImpl extends ServiceImpl<ProductOrderMapper, ProductOrderDO> implements ProductOrderService {
+@Slf4j
+public class ProductOrderServiceImpl  implements ProductOrderService {
 
 }

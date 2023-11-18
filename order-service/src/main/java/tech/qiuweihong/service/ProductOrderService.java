@@ -2,6 +2,8 @@ package tech.qiuweihong.service;
 
 import tech.qiuweihong.model.ProductOrderDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.qiuweihong.request.SubmitOrderRequest;
+import tech.qiuweihong.utils.JsonData;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ProductOrderService {
 
+    JsonData submitOrder(SubmitOrderRequest submitOrderRequest);
 }

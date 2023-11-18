@@ -8,10 +8,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.SendCodeEnum;
+import tech.qiuweihong.feign.CouponFeignService;
 import tech.qiuweihong.interceptor.LoginInterceptor;
 import tech.qiuweihong.model.LoginUser;
 import tech.qiuweihong.model.UserDO;
 import tech.qiuweihong.mapper.UserMapper;
+import tech.qiuweihong.request.NewUserCouponRequest;
 import tech.qiuweihong.request.UserLoginRequest;
 import tech.qiuweihong.request.UserRegisterRequest;
 import tech.qiuweihong.service.NotifyService;
@@ -44,6 +46,8 @@ public class UserServiceImpl implements UserService {
      * @param registerRequest
      * @return
      * */
+    @Autowired
+    private CouponFeignService couponFeignService;
     @Autowired
     private NotifyService notifyService;
     @Autowired
@@ -121,7 +125,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private void initNewUserData(UserDO userDO){
-
+        NewUserCouponRequest request = new NewUserCouponRequest();
+        request.setName(userDO.getName());
+        request.setUserId(userDO.getId());
+        JsonData data = couponFeignService.claimNewUserCoupon(request);
+        log.info("Distributing new user coupon: {}, result: {}",request.toString(),data.toString());
     }
     /**
      * check account unique

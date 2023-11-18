@@ -54,3 +54,11 @@ aws:
 logging:
   level:
     root: INFO
+
+seata:
+  tx-service-group: ${spring.application.name}-group
+  service:
+    grouplist:
+      ecommerce: 127.0.0.1:8091
+    vgroup-mapping:
+      user-service-group: ecommerce

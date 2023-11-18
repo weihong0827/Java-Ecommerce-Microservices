@@ -23,6 +23,17 @@ services:
       - redis_data:/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+  seata-server:
+    image: seataio/seata-server:latest
+    hostname: seata-server
+    ports:
+      - 8091:8091
+      - 7091:7091
+    environment:
+      - SEATA_PORT=8091
+    expose:
+      - 8091
+      - 7091
 #  nacos:
 #    image: nacos/nacos-server
 #    container_name: nacos_java

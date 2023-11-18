@@ -65,12 +65,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    @Override
-    public void clear() {
-        String cartKey = getCartKey();
-        redisTemplate.delete(cartKey);
 
-    }
     private List<CartItemVO> buildCartItem(boolean getLatestPrice){
         BoundHashOperations<String,Object,Object> cart = getMyCartOps();
         List<Object> itemList = cart.values();
@@ -102,6 +97,12 @@ public class CartServiceImpl implements CartService {
         });
 
     }
+    @Override
+    public void clear() {
+        String cartKey = getCartKey();
+        redisTemplate.delete(cartKey);
+
+    }
 
     @Override
     public CartVO getCart() {
@@ -114,10 +115,28 @@ public class CartServiceImpl implements CartService {
         return cartVO;
     }
 
+    @Override
+    public void deleteItem(long itemId) {
+        BoundHashOperations<String,Object,Object> cartOps = getMyCartOps();
+        cartOps.delete(itemId);
+
+    }
+
+    @Override
+    public void changeItemNum(CartItemRequest cartItemRequest) {
+        BoundHashOperations<String,Object,Object> cartOps = getMyCartOps();
+        Object cacheObj = cartOps.get(cartItemRequest.getProductId());
+        if(cacheObj==null){throw new BizException(BizCodeEnum.CART_FAIL);}
+        String obj = (String) cacheObj;
+
+        CartItemVO cartItemVO = JSON.parseObject(obj,CartItemVO.class);
+        cartItemVO.setBuyNum(cartItemRequest.getBuyNum());
+        cartOps.put(cartItemRequest.getProductId(), JSON.toJSONString(cartItemVO));
+    }
+
     private BoundHashOperations<String,Object,Object> getMyCartOps(){
         String cartKey = getCartKey();
         return redisTemplate.boundHashOps(cartKey);
-
     }
 
     private String getCartKey(){

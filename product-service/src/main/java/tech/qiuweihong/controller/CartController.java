@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.spring.web.json.Json;
 import tech.qiuweihong.request.CartItemRequest;
 import tech.qiuweihong.service.CartService;
 import tech.qiuweihong.utils.JsonData;
@@ -40,4 +41,23 @@ public class CartController {
         CartVO cartVO = cartService.getCart();
         return JsonData.buildSuccess(cartVO);
     }
+
+    @ApiOperation("delete cart item")
+    @DeleteMapping("/{item_id}")
+    public JsonData deleteCartItem(
+            @ApiParam(value = "Item id to be deleted",required = true)
+            @PathVariable("item_id") long item_id
+    ){
+        cartService.deleteItem(item_id);
+        return JsonData.buildSuccess();
+    }
+
+    @ApiOperation("Change Item Num")
+    @PostMapping("/change")
+    public JsonData changeItemNum(@ApiParam("cart item") @RequestBody CartItemRequest cartItemRequest){
+        cartService.changeItemNum(cartItemRequest);
+        return JsonData.buildSuccess();
+
+    }
+
 }

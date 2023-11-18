@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: coupon-service
+  cloud:
+    # service discovery address
+    nacos:
+      discovery:
+        server-addr: 192.168.0.70:8848
 
   # Database Configuration
   datasource:

@@ -23,6 +23,14 @@ services:
       - redis_data:/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+#  nacos:
+#    image: nacos/nacos-server
+#    container_name: nacos_java
+#    ports:
+#      - "8848:8848"
+#    environment:
+#      - MODE=standalone
+#    restart: unless-stopped
 
 volumes:
   postgres_data:

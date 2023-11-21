@@ -22,6 +22,9 @@ public class CouponApplication {
         System.setProperty("REDIS_PORT", dotenv.get("REDIS_PORT"));
         System.setProperty("REDIS_PASSWORD", dotenv.get("REDIS_PASSWORD"));
         System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
+        System.setProperty("DATABASE_HOST", dotenv.get("DATABASE_HOST"));
+        System.setProperty("DATABASE_SCHEME", dotenv.get("DATABASE_SCHEME"));
+        System.setProperty("DATABASE_PORT", dotenv.get("DATABASE_PORT"));
         SpringApplication.run(CouponApplication.class,args);
     }
 

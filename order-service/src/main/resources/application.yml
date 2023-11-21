@@ -12,8 +12,10 @@ spring:
 
   # Database Configuration
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/Order?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5432/Order?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:${DATABASE_SCHEME}://${DATABASE_HOST}:${DATABASE_PORT}/Order?serverTimezone=UTC  # JDBC URL for MySQL
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 

@@ -68,14 +68,14 @@ public class MyBatisPlusGenerator {
                 .setRestControllerStyle(true)
 
                 // 生成的表, 支持多表一起生成，以数组形式填写
-                .setInclude("user","address");
+                .setInclude("users");
 
         //4. 包名策略配置
         PackageConfig pkConfig = new PackageConfig();
         pkConfig.setParent("tech.qiuweihong")
                 .setMapper("mapper")
-                .setService("service")
-                .setController("controller")
+//                .setService("service")
+//                .setController("controller")
                 .setEntity("model")
                 .setXml("mapper");
 

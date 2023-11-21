@@ -13,6 +13,20 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_java
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DATABASE_DB}
+      MYSQL_USER: ${DATABASE_USERNAME}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}  # Set a root password
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
   redis:
     image: redis:latest
     container_name: redis_java
@@ -24,7 +38,7 @@ services:
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
   seata-server:
-    image: seataio/seata-server:latest
+    image: seataio/seata-server:1.7.0
     hostname: seata-server
     ports:
       - 8091:8091
@@ -46,3 +60,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  mysql_data:

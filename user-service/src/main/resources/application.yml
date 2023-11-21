@@ -12,10 +12,15 @@ spring:
 
   # Database Configuration
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: ${DATABASE_URL}
+#    driver-class-name: org.postgresql.Driver
+#    url: ${DATABASE_URL}
+#    username: ${DATABASE_USERNAME}
+#    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.70:3306/Users?serverTimezone=UTC  # JDBC URL for MySQL
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+
 
   redis:
     host: ${REDIS_HOST}

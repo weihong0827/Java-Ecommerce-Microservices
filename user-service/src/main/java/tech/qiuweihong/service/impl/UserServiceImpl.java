@@ -1,6 +1,7 @@
 package tech.qiuweihong.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
     @Override
+    @GlobalTransactional
     public JsonData register(UserRegisterRequest registerRequest) {
         boolean checkCode = false;
         log.info(registerRequest.toString());
@@ -88,6 +90,8 @@ public class UserServiceImpl implements UserService {
 
         // initalize data and give new user perks
         initNewUserData(userDO);
+        int i =1/0;
+
         return JsonData.buildSuccess();
 
 
@@ -129,6 +133,9 @@ public class UserServiceImpl implements UserService {
         request.setName(userDO.getName());
         request.setUserId(userDO.getId());
         JsonData data = couponFeignService.claimNewUserCoupon(request);
+        if (data.getCode()!=0){
+            throw new RuntimeException("Distribute coupon error: "+data.getMsg());
+        }
         log.info("Distributing new user coupon: {}, result: {}",request.toString(),data.toString());
     }
     /**

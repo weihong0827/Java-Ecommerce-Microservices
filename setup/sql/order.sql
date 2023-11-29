@@ -1,4 +1,4 @@
-USE Order;
+USE Orders;
 CREATE TABLE `product_order` (
      `id` bigint(11) NOT NULL AUTO_INCREMENT,
      `out_trade_no` varchar(64) DEFAULT NULL COMMENT '订单唯一标识',

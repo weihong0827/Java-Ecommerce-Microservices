@@ -41,3 +41,17 @@ VALUES
     (2, 'Tech Person Cup Linux', 'https://file.xdclass.net/video/2020/alibabacloud/zt-alibabacloud.png', 'https://file.xdclass.net/video/2021/59-Postman/summary.jpeg', 432.00, 42.00, 20, '2021-03-12 00:00:00', 2),
     (3, 'Tech Person Cup Docker', 'https://file.xdclass.net/video/2020/alibabacloud/zt-alibabacloud.png', 'https://file.xdclass.net/video/2021/60-MLS/summary.jpeg', 35.00, 12.00, 20, '2022-09-22 00:00:00', 13),
     (4, 'Tech Person Cup Git', 'https://file.xdclass.net/video/2020/alibabacloud/zt-alibabacloud.png', 'https://file.xdclass.net/video/2021/60-MLS/summary.jpeg', 12.00, 14.00, 20, '2022-11-12 00:00:00', 2);
+CREATE TABLE product_task (
+                              id BIGSERIAL PRIMARY KEY,
+                              product_id BIGINT,
+                              buy_num INT,
+                              product_name VARCHAR(128),
+                              lock_state VARCHAR(32),
+                              out_trade_no VARCHAR(32),
+                              create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON COLUMN product_task.product_id IS 'Product id';
+COMMENT ON COLUMN product_task.buy_num IS 'Purchased Amount';
+COMMENT ON COLUMN product_task.product_name IS 'Product Name';
+COMMENT ON COLUMN product_task.lock_state IS 'Lock State:LOCK,FINISHED,CANCEL';

@@ -8,8 +8,8 @@ services:
     env_file:
       - ./setup/env/nacos.env
     volumes:
-      - ./standalone-logs/:/home/nacos/logs
-      - ./init.d/application.properties:/home/nacos/conf/application.properties
+      - ./setup/nacos/standalone-logs/:/home/nacos/logs
+      - ./setup/nacos/init.d/application.properties:/home/nacos/conf/application.properties
     ports:
       - "8848:8848"
       - "9848:9848"
@@ -18,17 +18,27 @@ services:
         condition: service_healthy
 
     restart: on-failure
+  postgres:
+    image: postgres:latest
+    container_name: postgres_java
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   mysql:
     container_name: mysql
     build:
       context: .
-      dockerfile: ./image/mysql/5.7/Dockerfile
-    image: example/mysql:5.7
+      dockerfile: ./setup/image/mysql/Dockerfile
+    image: mysql:5.7
     env_file:
-      - ../env/mysql.env
+      - ./setup/env/mysql.env
     volumes:
-      - ./mysql:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
@@ -48,7 +58,7 @@ services:
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
   seata-server:
-    image: seataio/seata-server:1.7.0
+    image: seataio/seata-server:1.3.0
     hostname: seata-server
     ports:
       - 8091:8091
@@ -58,16 +68,9 @@ services:
     expose:
       - 8091
       - 7091
-#  nacos:
-#    image: nacos/nacos-server
-#    container_name: nacos_java
-#    ports:
-#      - "8848:8848"
-#    environment:
-#      - MODE=standalone
-#    restart: unless-stopped
+
 
 volumes:
-  postgres_data:
   redis_data:
   mysql_data:
+  postgres_data:

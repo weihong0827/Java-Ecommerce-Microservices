@@ -90,7 +90,6 @@ public class UserServiceImpl implements UserService {
 
         // initalize data and give new user perks
         initNewUserData(userDO);
-        int i =1/0;
 
         return JsonData.buildSuccess();
 

@@ -1,5 +1,5 @@
-USE User;
-CREATE TABLE `user` (
+USE Users;
+CREATE TABLE `users` (
     `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(128) DEFAULT NULL COMMENT '昵称',
     `pwd` varchar(124) DEFAULT NULL COMMENT '密码',

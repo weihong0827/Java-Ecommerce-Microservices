@@ -68,3 +68,29 @@ VALUES
     (22, 'PROMOTION', 'PUBLISH', 'https://file.xdclass.net/video/2020/alibabacloud/zt-alibabacloud.png', 'Expired - From August 2020 to September 2020 - Product ID 3 - 6 Yuan Discount Coupon - Limited to 1 per Person - Stackable Use', 6.00, 1, '2020-08-01 00:00:00', '2020-09-29 00:00:00', 100, 100, '2020-12-26 16:33:03', 0.00),
     (20, 'PROMOTION', 'PUBLISH', 'https://file.xdclass.net/video/2020/alibabacloud/zt-alibabacloud.png', 'Valid - From August 2020 to September 2021 - Product ID 1 - 8.8 Yuan Discount Coupon - Limited to 2 per Person - Non-stackable Use', 8.80, 2, '2020-08-01 00:00:00', '2021-09-29 00:00:00', 100, 96, '2020-12-26 16:33:03',0.00),
     (21, 'PROMOTION', 'PUBLISH', 'https://file.xdclass.net/video/2020/alibabacloud/zt-alibabacloud.png', 'Valid - From August 2020 to September 2021 - Product ID 2 - 9.9 Yuan Discount Coupon - Limited to 2 per Person - Stackable Use', 8.80, 2, '2020-08-01 00:00:00', '2021-09-29 00:00:00', 100, 96, '2020-12-26 16:33:03', 0.00);
+
+CREATE TABLE undo_log (
+                          id BIGSERIAL NOT NULL,
+                          branch_id bigint NOT NULL,
+                          xid varchar(100) NOT NULL,
+                          context varchar(128) NOT NULL,
+                          rollback_info BYTEA NOT NULL,
+                          log_status int NOT NULL,
+                          log_created timestamp without time zone NOT NULL,
+                          log_modified timestamp without time zone NOT NULL,
+                          PRIMARY KEY (id),
+                          UNIQUE (xid, branch_id)
+);
+
+CREATE TABLE coupon_task (
+                             id BIGSERIAL PRIMARY KEY,
+                             coupon_record_id BIGINT,
+                             create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             out_trade_no VARCHAR(64),
+                             lock_state VARCHAR(32)
+);
+
+COMMENT ON COLUMN coupon_task.coupon_record_id IS 'Coupon id';
+COMMENT ON COLUMN coupon_task.create_time IS 'Creation time';
+COMMENT ON COLUMN coupon_task.out_trade_no IS 'Order ID';
+COMMENT ON COLUMN coupon_task.lock_state IS 'Lock State:LOCK,FINISHED,CANCEL';

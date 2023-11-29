@@ -1,6 +1,6 @@
 package tech.qiuweihong.mapper;
 
-import tech.qiuweihong.model.ProductOrderDO;
+import tech.qiuweihong.model.CouponTaskDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author Qiu Weihong
- * @since 2023-11-18
+ * @since 2023-11-29
  */
-public interface ProductOrderMapper extends BaseMapper<ProductOrderDO> {
+public interface CouponTaskMapper extends BaseMapper<CouponTaskDO> {
 
 }

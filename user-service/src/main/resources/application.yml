@@ -12,11 +12,12 @@ spring:
 
   # Database Configuration
   datasource:
-#    driver-class-name: org.postgresql.Driver
+
 #    url: ${DATABASE_URL}
 #    username: ${DATABASE_USERNAME}
 #    password: ${DATABASE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    #driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     url: jdbc:${DATABASE_SCHEME}://${DATABASE_HOST}:${DATABASE_PORT}/Users?serverTimezone=UTC  # JDBC URL for MySQL
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}

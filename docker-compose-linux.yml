@@ -46,6 +46,18 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
+  rabbitMQ:
+    container_name: rabbit_mq
+    hostname: mq_host
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      - "25672:25672"
+    image: rabbitmq:management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+
 
   redis:
     image: redis:latest

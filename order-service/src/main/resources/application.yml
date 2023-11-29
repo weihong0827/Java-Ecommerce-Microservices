@@ -8,7 +8,7 @@ spring:
     # service discovery address
     nacos:
       discovery:
-        server-addr: 192.168.0.70:8848
+        server-addr: ${NACOS_HOST}:8848
 
   # Database Configuration
   datasource:
@@ -23,7 +23,15 @@ spring:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
     password: ${REDIS_PASSWORD}
-
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: 5672
+    virtual-host: /
+    password: ${RABBITMQ_PASSWORD}
+    username: ${RABBITMQ_USER}
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 
 

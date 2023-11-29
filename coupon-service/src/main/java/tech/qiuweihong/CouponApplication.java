@@ -16,15 +16,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class CouponApplication {
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
-        System.setProperty("DATABASE_USERNAME", dotenv.get("DATABASE_USERNAME"));
-        System.setProperty("DATABASE_PASSWORD", dotenv.get("DATABASE_PASSWORD"));
-        System.setProperty("REDIS_HOST", dotenv.get("REDIS_HOST"));
-        System.setProperty("REDIS_PORT", dotenv.get("REDIS_PORT"));
-        System.setProperty("REDIS_PASSWORD", dotenv.get("REDIS_PASSWORD"));
-        System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
-        System.setProperty("DATABASE_HOST", dotenv.get("DATABASE_HOST"));
-        System.setProperty("DATABASE_SCHEME", dotenv.get("DATABASE_SCHEME"));
-        System.setProperty("DATABASE_PORT", dotenv.get("DATABASE_PORT"));
+        dotenv.entries().forEach(entry -> {
+            System.setProperty(entry.getKey(), entry.getValue());
+        });
+
         SpringApplication.run(CouponApplication.class,args);
     }
 

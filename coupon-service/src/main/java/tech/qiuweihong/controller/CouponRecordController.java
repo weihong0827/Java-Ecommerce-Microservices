@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import tech.qiuweihong.enums.BizCodeEnum;
+import tech.qiuweihong.request.LockCouponRecordRequest;
 import tech.qiuweihong.service.CouponRecordService;
 import tech.qiuweihong.utils.JsonData;
 import tech.qiuweihong.vo.CouponRecordVO;
@@ -46,6 +47,11 @@ public class CouponRecordController {
         return couponRecordVO==null ? JsonData.buildResult(BizCodeEnum.COUPON_NO_EXITS):JsonData.buildSuccess(couponRecordVO);
 
     }
+    @ApiOperation("rpc - lock coupon record")
+    @PostMapping("lock_records")
+    public JsonData lockCouponRecord(@ApiParam("Lock Coupon Model")@RequestBody LockCouponRecordRequest lockCouponRecordRequest){
+        return couponRecordService.lockCouponRecord(lockCouponRecordRequest);
 
+    }
 }
 

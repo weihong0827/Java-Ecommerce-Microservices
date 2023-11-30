@@ -1,7 +1,10 @@
 package tech.qiuweihong.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import tech.qiuweihong.model.CouponTaskDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CouponTaskMapper extends BaseMapper<CouponTaskDO> {
 
+    int insertBatch(@Param("couponTaskList")List<CouponTaskDO> couponTaskDOS);
 }

@@ -6,17 +6,27 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import tech.qiuweihong.Exception.BizException;
+import tech.qiuweihong.enums.BizCodeEnum;
+import tech.qiuweihong.enums.CouponUseStateEnum;
+import tech.qiuweihong.enums.StockTaskStateEnum;
 import tech.qiuweihong.interceptor.LoginInterceptor;
+import tech.qiuweihong.mapper.CouponTaskMapper;
 import tech.qiuweihong.model.CouponDO;
 import tech.qiuweihong.model.CouponRecordDO;
 import tech.qiuweihong.mapper.CouponRecordMapper;
+import tech.qiuweihong.model.CouponTaskDO;
 import tech.qiuweihong.model.LoginUser;
+import tech.qiuweihong.request.LockCouponRecordRequest;
 import tech.qiuweihong.service.CouponRecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import tech.qiuweihong.utils.JsonData;
 import tech.qiuweihong.vo.CouponRecordVO;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -33,6 +43,8 @@ import java.util.stream.Collectors;
 public class CouponRecordServiceImpl implements CouponRecordService {
     @Autowired
     private CouponRecordMapper couponRecordMapper;
+    @Autowired
+    private CouponTaskMapper couponTaskMapperMapper;
 
     @Override
     public Map<String, Object> detail(int page, int size) {
@@ -62,6 +74,32 @@ public class CouponRecordServiceImpl implements CouponRecordService {
         );
         if (couponDO==null){return null;}
         return beanProcess(couponDO);
+    }
+
+    @Override
+    public JsonData lockCouponRecord(LockCouponRecordRequest recordRequest) {
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        String orderOutTradeNo = recordRequest.getOrderOutTradeNo();
+        List<Long> couponList = recordRequest.getLockCouponRecodIds();
+        int updatedRows = couponRecordMapper.lockCouponState(loginUser.getId(), CouponUseStateEnum.USED.name(),couponList);
+        List<CouponTaskDO> couponTaskDOS = couponList.stream().map(obj->{
+                CouponTaskDO couponTaskDO = new CouponTaskDO();
+                couponTaskDO.setCreateTime(new Date());
+                couponTaskDO.setOutTradeNo(orderOutTradeNo);
+                couponTaskDO.setCouponRecordId(obj);
+                couponTaskDO.setLockState(StockTaskStateEnum.LOCK.name());
+                return couponTaskDO;
+        }).collect(Collectors.toList());
+        int insertRows = couponTaskMapperMapper.insertBatch(couponTaskDOS);
+        log.info("Lock coupon record rows={}",updatedRows);
+        log.info("Insert coupon task record rows={}",insertRows);
+        if(couponList.size()==insertRows &&insertRows==updatedRows){
+            // send to message queue
+            return JsonData.buildSuccess();
+        }else {
+            throw new BizException(BizCodeEnum.COUPON_RECORD_LOCK_FAIL);
+        }
+
     }
 
     private CouponRecordVO beanProcess(CouponRecordDO couponRecordDO){

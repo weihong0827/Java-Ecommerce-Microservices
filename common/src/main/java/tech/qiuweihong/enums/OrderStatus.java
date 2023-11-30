@@ -1,7 +1,7 @@
 package tech.qiuweihong.enums;
 
 public enum OrderStatus {
-    MEW,
+    NEW,
 
     PAID,
 

@@ -2,6 +2,7 @@ package tech.qiuweihong.service;
 
 import tech.qiuweihong.model.CouponRecordDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.qiuweihong.model.CouponRecordMessage;
 import tech.qiuweihong.request.LockCouponRecordRequest;
 import tech.qiuweihong.utils.JsonData;
 import tech.qiuweihong.vo.CouponRecordVO;
@@ -22,4 +23,6 @@ public interface CouponRecordService  {
     CouponRecordVO findById(int recordId);
 
     JsonData lockCouponRecord(LockCouponRecordRequest lockCouponRecordRequest);
+
+    boolean releaseCouponRecord(CouponRecordMessage recordMessage);
 }

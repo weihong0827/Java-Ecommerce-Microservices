@@ -7,11 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import springfox.documentation.spring.web.json.Json;
 import tech.qiuweihong.Exception.BizException;
 import tech.qiuweihong.config.RabbitMQConfig;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.CouponUseStateEnum;
+import tech.qiuweihong.enums.OrderStatus;
 import tech.qiuweihong.enums.StockTaskStateEnum;
+import tech.qiuweihong.feign.ProductOrderFeign;
 import tech.qiuweihong.interceptor.LoginInterceptor;
 import tech.qiuweihong.mapper.CouponTaskMapper;
 import tech.qiuweihong.model.*;
@@ -39,16 +44,20 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+
 public class CouponRecordServiceImpl implements CouponRecordService {
     @Autowired
     private CouponRecordMapper couponRecordMapper;
     @Autowired
-    private CouponTaskMapper couponTaskMapperMapper;
+    private CouponTaskMapper couponTaskMapper;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
     @Autowired
     private RabbitMQConfig rabbitMQConfig;
+
+    @Autowired
+    private ProductOrderFeign productOrderFeign;
 
     @Override
     public Map<String, Object> detail(int page, int size) {
@@ -94,7 +103,7 @@ public class CouponRecordServiceImpl implements CouponRecordService {
                 couponTaskDO.setLockState(StockTaskStateEnum.LOCK.name());
                 return couponTaskDO;
         }).collect(Collectors.toList());
-        int insertRows = couponTaskMapperMapper.insertBatch(couponTaskDOS);
+        int insertRows = couponTaskMapper.insertBatch(couponTaskDOS);
         log.info("Lock coupon record rows={}",updatedRows);
         log.info("Insert coupon task record rows={}",insertRows);
         if(couponList.size()==insertRows &&insertRows==updatedRows){
@@ -109,6 +118,52 @@ public class CouponRecordServiceImpl implements CouponRecordService {
             return JsonData.buildSuccess();
         }else {
             throw new BizException(BizCodeEnum.COUPON_RECORD_LOCK_FAIL);
+        }
+
+    }
+
+    /**
+     * Check task existance
+     * query order status
+     * @param recordMessage
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public boolean releaseCouponRecord(CouponRecordMessage recordMessage) {
+        CouponTaskDO couponTaskDO = couponTaskMapper.selectOne(new QueryWrapper<CouponTaskDO>().eq("id",recordMessage.getTaskId()));
+        if (couponTaskDO==null){
+            log.warn("task null, message:{}",recordMessage);
+
+            return true; //processed message
+        }
+        if (couponTaskDO.getLockState().equals(StockTaskStateEnum.LOCK.name())){
+            JsonData jsonData = productOrderFeign.queryProductOrderStatus(recordMessage.getOutTradeNo());
+            if (jsonData.getCode()==0){
+                String state = jsonData.getData().toString();
+                if (OrderStatus.NEW.name().equalsIgnoreCase(state)){
+                    log.warn("Order status NEW return to MQ:{}",recordMessage);
+                    return false;
+                }
+                if(OrderStatus.PAID.name().equalsIgnoreCase(state)){
+                    couponTaskDO.setLockState(StockTaskStateEnum.FINISH.name());
+                    couponTaskMapper.update(couponTaskDO,new QueryWrapper<CouponTaskDO>().eq("id",recordMessage.getTaskId()));
+                    log.info("Order Paid, changing tasks to finish state:{}",recordMessage);
+                    return true;
+                }
+
+            }
+            // order does not exist or order cancelled, restore coupon use state to NEW
+            log.warn("order does not exist or order cancelled, restore coupon use state to NEW,message:{}",recordMessage);
+            couponTaskDO.setLockState(StockTaskStateEnum.CANCEL.name());
+            couponTaskMapper.update(couponTaskDO,new QueryWrapper<CouponTaskDO>().eq("id",recordMessage.getTaskId()));
+            couponRecordMapper.updateState(couponTaskDO.getCouponRecordId(),CouponUseStateEnum.NEW.name());
+            return true;
+
+
+        }else{
+            log.warn("task state is not LOCK, state={}, message={}",couponTaskDO.getLockState(),recordMessage);
+            return true;
         }
 
     }

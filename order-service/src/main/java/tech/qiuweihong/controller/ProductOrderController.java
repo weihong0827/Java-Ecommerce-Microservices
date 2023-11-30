@@ -4,12 +4,11 @@ package tech.qiuweihong.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.ClientType;
 import tech.qiuweihong.enums.OrderPaymentType;
 import tech.qiuweihong.request.SubmitOrderRequest;
@@ -57,6 +56,12 @@ public class ProductOrderController {
             log.error("build order failed {}",data.toString());
         }
 
+    }
+    @ApiOperation("Query order status")
+    @GetMapping("/query_state")
+    public JsonData queryProductOrderStatus(@RequestParam("out_trade_no")String outTradeNo){
+        String state = productOrderService.queryProductOrderState(outTradeNo);
+        return StringUtils.isBlank(state)?JsonData.buildResult(BizCodeEnum.ORDER_CONFIRM_NOT_EXIST):JsonData.buildSuccess(state);
     }
 
     private void writeData(HttpServletResponse response, JsonData data) {

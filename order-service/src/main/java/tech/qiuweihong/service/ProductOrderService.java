@@ -16,4 +16,6 @@ import tech.qiuweihong.utils.JsonData;
 public interface ProductOrderService {
 
     JsonData submitOrder(SubmitOrderRequest submitOrderRequest);
+
+    String queryProductOrderState(String outTradeNo);
 }

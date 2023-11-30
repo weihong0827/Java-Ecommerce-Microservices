@@ -34,8 +34,24 @@ spring:
       simple:
         acknowledge-mode: manual
 
+mqconfig:
+  # delay queue
+  coupon_release_delay_queue: coupon.release.delay.queue
 
+  #release queue
+  coupon_release_queue: coupon.release.queue
 
+  # Exchange
+  coupon_event_exchange: coupon.event.exchange
+
+  #key to enter the delay queue
+  coupon_release_delay_routing_key: coupon.release.delay.routing.key
+
+  #key to enter the release queu
+  coupon_release_routing_key: coupon.release.routing.key
+
+  #time the message expires in ms
+  ttl: 15000
 
 # Configure MyBatis-Plus to print SQL logs
 mybatis-plus:

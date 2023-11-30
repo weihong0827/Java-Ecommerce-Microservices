@@ -68,6 +68,6 @@ seata:
   tx-service-group: ${spring.application.name}-group
   service:
     grouplist:
-      ecommerce: 127.0.0.1:8091
+      ecommerce: ${SEATA_HOST}:8091
     vgroup-mapping:
       coupon-service-group: ecommerce

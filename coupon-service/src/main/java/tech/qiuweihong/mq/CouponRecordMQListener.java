@@ -24,7 +24,7 @@ public class CouponRecordMQListener {
     @Autowired
     private RedissonClient redissonClient;
     @RabbitHandler
-    public  void releaseCouponRecord(CouponRecordMessage recordMessage, Message message, Channel channel){
+    public void releaseCouponRecord(CouponRecordMessage recordMessage, Message message, Channel channel){
         log.info("Received Message: release coupon record {}",recordMessage);
         long msgTag = message.getMessageProperties().getDeliveryTag();
         boolean flag = couponRecordService.releaseCouponRecord(recordMessage);

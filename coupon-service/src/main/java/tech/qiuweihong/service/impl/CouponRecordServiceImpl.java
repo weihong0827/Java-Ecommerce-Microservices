@@ -154,6 +154,7 @@ public class CouponRecordServiceImpl implements CouponRecordService {
 
             }
             // order does not exist or order cancelled, restore coupon use state to NEW
+
             log.warn("order does not exist or order cancelled, restore coupon use state to NEW,message:{}",recordMessage);
             couponTaskDO.setLockState(StockTaskStateEnum.CANCEL.name());
             couponTaskMapper.update(couponTaskDO,new QueryWrapper<CouponTaskDO>().eq("id",recordMessage.getTaskId()));

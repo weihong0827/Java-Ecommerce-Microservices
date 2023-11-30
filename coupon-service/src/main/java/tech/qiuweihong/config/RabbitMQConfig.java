@@ -1,6 +1,6 @@
 package tech.qiuweihong.config;
 
-import com.rabbitmq.client.AMQP;
+
 import lombok.Data;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Exchange;
@@ -68,8 +68,8 @@ public class RabbitMQConfig {
     public Queue couponReleaseDelayQueue(){
         Map<String,Object> args = new HashMap<>(3);
         args.put("x-message-ttl",ttl);
-        args.put("x-message-routing-key",couponReleaseDelayRoutingKey);
-        args.put("x-message-exchange",eventExchange);
+        args.put("x-dead-letter-routing-key",couponReleaseRoutingKey);
+        args.put("x-dead-letter-exchange",eventExchange);
         return new Queue(couponReleaseDelayQueue,true,false,false,args);
     }
 

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import tech.qiuweihong.request.LockProductRequest;
 import tech.qiuweihong.service.ProductService;
 import tech.qiuweihong.utils.JsonData;
 import tech.qiuweihong.vo.ProductVO;
@@ -43,6 +44,12 @@ public class ProductController {
     public JsonData productDetail(@ApiParam(value="product id",required = true) @PathVariable("product_id") long id){
         ProductVO productVO = productService.getProduct(id);
         return JsonData.buildSuccess(productVO);
+    }
+    @PostMapping("lock_product")
+    @ApiOperation("lock product stock")
+    public JsonData lockProduct(@ApiParam(value = "lock product request") @RequestBody LockProductRequest request){
+        return productService.lockProductStock(request);
+
     }
 
 }

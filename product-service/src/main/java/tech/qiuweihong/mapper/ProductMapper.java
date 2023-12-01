@@ -2,6 +2,7 @@ package tech.qiuweihong.mapper;
 
 import tech.qiuweihong.model.ProductDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2023-11-13
  */
 public interface ProductMapper extends BaseMapper<ProductDO> {
+
+    int lockProductStock(@Param("product_id")Long productId, @Param("buy_num")Integer count);
 
 }

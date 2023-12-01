@@ -3,6 +3,8 @@ package tech.qiuweihong.service;
 import org.springframework.stereotype.Service;
 import tech.qiuweihong.model.ProductDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.qiuweihong.request.LockProductRequest;
+import tech.qiuweihong.utils.JsonData;
 import tech.qiuweihong.vo.ProductVO;
 
 import java.util.List;
@@ -24,4 +26,5 @@ public interface ProductService  {
     ProductVO getProduct(long id);
 
     List<ProductVO> findProductByIdBatch(List<Long> productIdList);
-}
+
+    JsonData lockProductStock(LockProductRequest request);

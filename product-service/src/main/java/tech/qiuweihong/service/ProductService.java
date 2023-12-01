@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Qiu Weihong
  * @since 2023-11-13
  */
-public interface ProductService  {
+public interface ProductService {
 
 
     Map<String, Object> listProducts(int page, int size);
@@ -28,3 +28,4 @@ public interface ProductService  {
     List<ProductVO> findProductByIdBatch(List<Long> productIdList);
 
     JsonData lockProductStock(LockProductRequest request);
+}

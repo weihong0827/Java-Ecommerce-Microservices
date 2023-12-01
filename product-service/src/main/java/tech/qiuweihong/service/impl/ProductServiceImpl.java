@@ -3,14 +3,18 @@ package tech.qiuweihong.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.Exception.BizException;
+import tech.qiuweihong.config.RabbitMQConfig;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.StockTaskStateEnum;
 import tech.qiuweihong.mapper.ProductTaskMapper;
 import tech.qiuweihong.model.ProductDO;
 import tech.qiuweihong.mapper.ProductMapper;
+import tech.qiuweihong.model.ProductMessage;
 import tech.qiuweihong.model.ProductTaskDO;
 import tech.qiuweihong.request.LockProductRequest;
 import tech.qiuweihong.request.OrderItemRequest;
@@ -36,6 +40,7 @@ import java.util.stream.Collectors;
  * @since 2023-11-13
  */
 @Service
+@Slf4j
 public class ProductServiceImpl  implements ProductService {
 
     @Autowired
@@ -43,6 +48,12 @@ public class ProductServiceImpl  implements ProductService {
 
     @Autowired
     private ProductTaskMapper productTaskMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private RabbitMQConfig rabbitMQConfig;
     @Override
     public Map<String, Object> listProducts(int page, int size) {
         Page<ProductDO> pageInfo = new Page<>(page,size);
@@ -93,6 +104,14 @@ public class ProductServiceImpl  implements ProductService {
                 taskDO.setCreateTime(new Date());
                 taskDO.setOutTradeNo(outTradeNo);
                 productTaskMapper.insert(taskDO);
+
+                // Send MQ message
+                ProductMessage productMessage = new ProductMessage();
+                productMessage.setOutTradeNo(outTradeNo);
+                productMessage.setTaskId(taskDO.getId());
+
+                rabbitTemplate.convertAndSend(rabbitMQConfig.getEventExchange(),rabbitMQConfig.getStockReleaseDelayRoutingKey(),productMessage);
+                log.info("Product locking message sent {}",productMessage);
             }
 
         }

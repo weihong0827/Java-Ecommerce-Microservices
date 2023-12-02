@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-@RabbitListener(queues = "${mqconfig.stock_release_queue")
+@RabbitListener(queues = "${mqconfig.stock_release_queue}")
 public class ProductStockMQListener{
     @Autowired
     ProductService productService;

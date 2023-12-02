@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import tech.qiuweihong.utils.JsonData;
 
-@FeignClient("order-service")
+@FeignClient(name="order-service")
 public interface ProductOrderFeign {
 
     @GetMapping ("/api/order/v1/query_state")

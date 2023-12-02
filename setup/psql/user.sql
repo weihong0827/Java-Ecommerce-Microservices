@@ -22,6 +22,27 @@ CREATE TABLE "users" (
                          mail VARCHAR(64) UNIQUE DEFAULT NULL,
                          secret VARCHAR(12) DEFAULT NULL
 );
+CREATE TABLE "address" (
+                           "id" SERIAL PRIMARY KEY,
+                           "user_id" BIGINT,
+                           "default_status" INTEGER CHECK (default_status IN (0, 1)),
+                           "receive_name" VARCHAR(64),
+                           "phone" VARCHAR(64),
+                           "province" VARCHAR(64),
+                           "city" VARCHAR(64),
+                           "region" VARCHAR(64),
+                           "detail_address" VARCHAR(200),
+                           "create_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON COLUMN "address"."user_id" IS 'User id';
+COMMENT ON COLUMN "address"."default_status" IS 'Whether it is the default shipping address: 0->no; 1->yes';
+COMMENT ON COLUMN "address"."receive_name" IS 'Receiver''s name';
+COMMENT ON COLUMN "address"."phone" IS 'Receiver''s phone';
+COMMENT ON COLUMN "address"."province" IS 'Province/municipality';
+COMMENT ON COLUMN "address"."city" IS 'City';
+COMMENT ON COLUMN "address"."region" IS 'District';
+COMMENT ON COLUMN "address"."detail_address" IS 'Detailed address';
 COMMENT ON COLUMN "users".name IS 'Nickname';
 COMMENT ON COLUMN "users".pwd IS 'Password';
 COMMENT ON COLUMN "users".head_img IS 'Profile Picture';

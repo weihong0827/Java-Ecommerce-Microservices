@@ -128,7 +128,7 @@ public class CouponServiceImpl implements CouponService {
     @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public JsonData initNewUserCoupon(NewUserCouponRequest newUserCouponRequest) {
         LoginUser loginUser = new LoginUser();
-        loginUser.setId((int) newUserCouponRequest.getUserId());
+        loginUser.setId(newUserCouponRequest.getUserId());
         loginUser.setName(newUserCouponRequest.getName());
         LoginInterceptor.threadLocal.set(loginUser);
 
@@ -146,7 +146,7 @@ public class CouponServiceImpl implements CouponService {
         return couponVO;
     }
 
-    private void checkCoupon(CouponDO couponDO, Integer id) {
+    private void checkCoupon(CouponDO couponDO, Long id) {
         if (couponDO.getStock() <= 0) {
             throw new BizException(BizCodeEnum.COUPON_NO_STOCK);
         }

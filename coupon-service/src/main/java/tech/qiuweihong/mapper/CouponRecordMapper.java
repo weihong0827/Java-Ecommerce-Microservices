@@ -17,7 +17,7 @@ import java.util.List;
 public interface CouponRecordMapper extends BaseMapper<CouponRecordDO> {
 
 
-    int lockCouponState(@Param("userId")Integer id, @Param("useState")String useState, @Param("couponList")List<Long> couponList);
+    int lockCouponState(@Param("userId")Long id, @Param("useState")String useState, @Param("couponList")List<Long> couponList);
 
     void updateState(@Param("couponRecordId") Long couponRecordId,@Param("state") String name);
 }

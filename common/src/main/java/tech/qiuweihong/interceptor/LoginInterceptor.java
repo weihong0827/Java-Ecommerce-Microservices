@@ -20,6 +20,14 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // Retrieve the token from the "Authorization" header
+        log.info(
+                "Request URL: {}, Request Method: {}, Request IP: {},header: {}",
+                request.getRequestURL().toString(),
+                request.getMethod(),
+                CommonUtils.getIpAddr(request),
+                request.getHeader("JWT")
+
+        );
         String accessToken = request.getHeader("JWT");
 
         // Check if the Authorization header is present and starts with "Bearer"
@@ -29,7 +37,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 CommonUtils.sendJsonMessage(response,JsonData.buildResult(BizCodeEnum.USER_NOT_LOGIN));
                 return false;
             }
-            Integer userId = Integer.valueOf(claims.get("id").toString());
+            Long userId = claims.get("id").equals(null)?null:Long.parseLong(claims.get("id").toString());
             String name = (String)claims.get("name");
             String mail = (String)claims.get("mail");
             LoginUser loginUser= new LoginUser();

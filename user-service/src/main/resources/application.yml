@@ -70,7 +70,7 @@ logging:
     root: INFO
 
 seata:
-  tx-service-group: ${spring.application.name}-group
+  tx-service-group: user-service-group
   service:
     grouplist:
       ecommerce: ${SEATA_HOST}:8091

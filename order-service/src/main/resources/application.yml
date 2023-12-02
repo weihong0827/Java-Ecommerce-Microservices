@@ -76,7 +76,3 @@ seata:
 alipay:
   success_return_url: https://weihong.tech
   callback_url: https://weihong.tech
-  private_key: ${ALIPAY_PRI_KEY}
-  public_key: ${ALIPAY_PUB_KEY}
-  gateway: ${ALIPAY_GATETWAY}
-  app_id: ${ALIPAY_APPID}

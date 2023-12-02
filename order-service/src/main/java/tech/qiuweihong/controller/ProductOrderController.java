@@ -4,7 +4,9 @@ package tech.qiuweihong.controller;
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradeWapPayResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -101,11 +103,11 @@ public class ProductOrderController {
         content.put("body", "good cup");
         // Order ttl, when does the user have to made the payment by, 1m-15d, m-min,h-hour, d-day,1c-current day before 2359, no decimals
         content.put("timeout_express", "5m");
-        AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
+        AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
         request.setBizContent(JSON.toJSONString(content));
         request.setNotifyUrl(callBackUrlConfig.getAlipayCallbackUrl());
         request.setReturnUrl(callBackUrlConfig.getAlipaySuccessReturnUrl());
-        AlipayTradeAppPayResponse tradeAppPayResponse= AliPayConfig.getInstance().pageExecute(request);
+        AlipayTradeWapPayResponse tradeAppPayResponse= AliPayConfig.getInstance().pageExecute(request);
         if (tradeAppPayResponse.isSuccess()){
             String form = tradeAppPayResponse.getBody();
             response.setContentType("text/html;charset=UTF-8");

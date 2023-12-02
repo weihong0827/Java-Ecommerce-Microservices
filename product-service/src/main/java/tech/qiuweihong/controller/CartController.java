@@ -9,6 +9,7 @@ import springfox.documentation.spring.web.json.Json;
 import tech.qiuweihong.request.CartItemRequest;
 import tech.qiuweihong.service.CartService;
 import tech.qiuweihong.utils.JsonData;
+import tech.qiuweihong.vo.CartItemVO;
 import tech.qiuweihong.vo.CartVO;
 
 import java.util.List;
@@ -58,6 +59,13 @@ public class CartController {
         cartService.changeItemNum(cartItemRequest);
         return JsonData.buildSuccess();
 
+    }
+    @PostMapping("confirm_order_cart_item")
+    @ApiOperation("confirm order cart item")
+    public JsonData confirmOrderCartItem(@ApiParam(value = "product ids") @RequestBody List<Long> productIds){
+
+        List<CartItemVO> cartItemVOS = cartService.confirmOrderCartItem(productIds);
+        return JsonData.buildSuccess(cartItemVOS);
     }
 
 }

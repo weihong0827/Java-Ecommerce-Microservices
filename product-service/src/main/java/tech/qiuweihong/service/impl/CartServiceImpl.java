@@ -134,6 +134,19 @@ public class CartServiceImpl implements CartService {
         cartOps.put(cartItemRequest.getProductId(), JSON.toJSONString(cartItemVO));
     }
 
+    @Override
+    public List<CartItemVO> confirmOrderCartItem(List<Long> productIds) {
+        List<CartItemVO> cartItemVOS = buildCartItem(true);
+        List<CartItemVO> result = cartItemVOS.stream().filter(item->{
+             if (productIds.contains(item.getProductId())){
+                 this.deleteItem(item.getProductId());
+                 return true;
+             }
+             return false;
+        }).collect(Collectors.toList());
+        return result;
+    }
+
     private BoundHashOperations<String,Object,Object> getMyCartOps(){
         String cartKey = getCartKey();
         return redisTemplate.boundHashOps(cartKey);

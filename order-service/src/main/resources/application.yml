@@ -46,3 +46,10 @@ mybatis-plus:
 logging:
   level:
     root: INFO
+seata:
+  tx-service-group: ${spring.application.name}-group
+  service:
+    grouplist:
+      ecommerce: ${SEATA_HOST}:8091
+    vgroup-mapping:
+      order-service-group: ecommerce

@@ -48,7 +48,7 @@ public class CouponRecordController {
 
     }
     @ApiOperation("rpc - lock coupon record")
-    @PostMapping("lock_records")
+    @PostMapping("/lock_records")
     public JsonData lockCouponRecord(@ApiParam("Lock Coupon Model")@RequestBody LockCouponRecordRequest lockCouponRecordRequest){
         return couponRecordService.lockCouponRecord(lockCouponRecordRequest);
 

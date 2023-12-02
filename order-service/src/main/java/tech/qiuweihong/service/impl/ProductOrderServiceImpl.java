@@ -1,19 +1,21 @@
 package tech.qiuweihong.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.Exception.BizException;
-import tech.qiuweihong.enums.BizCodeEnum;
-import tech.qiuweihong.enums.CouponUseStateEnum;
+import tech.qiuweihong.enums.*;
 import tech.qiuweihong.feign.CouponFeignService;
 import tech.qiuweihong.feign.ProductFeignService;
 import tech.qiuweihong.feign.UserFeignService;
 import tech.qiuweihong.interceptor.LoginInterceptor;
+import tech.qiuweihong.mapper.ProductOrderItemMapper;
 import tech.qiuweihong.model.LoginUser;
 import tech.qiuweihong.model.ProductOrderDO;
 import tech.qiuweihong.mapper.ProductOrderMapper;
+import tech.qiuweihong.model.ProductOrderItemDO;
 import tech.qiuweihong.request.LockCouponRecordRequest;
 import tech.qiuweihong.request.LockProductRequest;
 import tech.qiuweihong.request.OrderItemRequest;
@@ -29,6 +31,7 @@ import tech.qiuweihong.vo.ProductOrderAddressVO;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +46,8 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
     private ProductFeignService productFeignService;
     @Autowired
     private CouponFeignService couponFeignService;
+    @Autowired
+    private ProductOrderItemMapper productOrderItemMapper;
     @Override
     public JsonData submitOrder(SubmitOrderRequest submitOrderRequest) {
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
@@ -65,10 +70,56 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
         this.lockProductStock(orderItemVOS,outTradeNo);
 
         // Create Order
+        ProductOrderDO productOrderDO = this.saveProductOrder(submitOrderRequest,loginUser,outTradeNo,addressVO);
+
+        // Create Order Items
+        this.saveProductOrderItems(productOrderDO.getId(),outTradeNo,orderItemVOS);
+
+        // Send delay message to close order when payment not successful
 
         // Create Payment
 
         return null;
+    }
+
+    private void saveProductOrderItems(Long id, String outTradeNo, List<OrderItemVO> orderItemVOS) {
+        List<ProductOrderItemDO> list = orderItemVOS.stream().map(orderItemVO->{
+            ProductOrderItemDO productOrderItemDO = new ProductOrderItemDO();
+            productOrderItemDO.setProductId(orderItemVO.getProductId());
+            productOrderItemDO.setProductOrderId(id);
+            productOrderItemDO.setProductImg(orderItemVO.getProductImg());
+            productOrderItemDO.setProductName(orderItemVO.getProductTitle());
+            productOrderItemDO.setCreateTime(new Date());
+            productOrderItemDO.setOutTradeNo(outTradeNo);
+            productOrderItemDO.setAmount(orderItemVO.getAmount());
+            productOrderItemDO.setTotalAmount(orderItemVO.getTotalAmount());
+
+            return productOrderItemDO;
+        }).collect(Collectors.toList());
+        productOrderItemMapper.insertBatch(list);
+    }
+
+    private ProductOrderDO saveProductOrder(SubmitOrderRequest submitOrderRequest, LoginUser loginUser, String outTradeNo, ProductOrderAddressVO addressVO) {
+        ProductOrderDO productOrderDO = new ProductOrderDO();
+        productOrderDO.setUserId(loginUser.getId());
+        productOrderDO.setNickname(loginUser.getName());
+
+        productOrderDO.setOutTradeNo(outTradeNo);
+        productOrderDO.setCreateTime(new Date());
+        productOrderDO.setDel(0);
+        productOrderDO.setOrderType(OrderType.NORMAL.name());
+
+        productOrderDO.setPayAmount(submitOrderRequest.getActualAmount());
+        productOrderDO.setTotalAmount(submitOrderRequest.getTotalAmount());
+        productOrderDO.setState(OrderStatus.NEW.name());
+
+        productOrderDO.setPayType(OrderPaymentType.valueOf(submitOrderRequest.getPayType()).name());
+
+
+        productOrderDO.setReceiverAddress(JSON.toJSONString(addressVO));
+        productOrderMapper.insert(productOrderDO);
+        return productOrderDO;
+
     }
 
     private void lockProductStock(List<OrderItemVO> orderItemVOS, String outTradeNo) {

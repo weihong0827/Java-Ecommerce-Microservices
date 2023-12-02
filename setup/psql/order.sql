@@ -8,7 +8,7 @@ CREATE TABLE product_order (
                                pay_type VARCHAR(64),
                                nickname VARCHAR(64),
                                head_img VARCHAR(524),
-                               user_id INTEGER,
+                               user_id BIGINT,
                                del INTEGER DEFAULT '0',
                                update_time TIMESTAMP WITHOUT TIME ZONE,
                                order_type VARCHAR(32),

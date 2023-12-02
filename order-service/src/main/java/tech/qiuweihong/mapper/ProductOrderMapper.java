@@ -1,7 +1,11 @@
 package tech.qiuweihong.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import tech.qiuweihong.model.ProductOrderDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import tech.qiuweihong.model.ProductOrderItemDO;
+
+import java.util.List;
 
 /**
  * <p>

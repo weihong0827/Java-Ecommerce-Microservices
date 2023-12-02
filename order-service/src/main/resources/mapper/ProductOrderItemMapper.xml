@@ -20,5 +20,28 @@
     <sql id="Base_Column_List">
         id, product_order_id, out_trade_no, product_id, product_name, product_img, buy_num, create_time, total_amount, amount
     </sql>
+    <sql id="Base_Column_List_No_Id">
+        id, product_order_id, out_trade_no, product_id, product_name, product_img, buy_num, create_time, total_amount, amount
+    </sql>
+    <insert id="insertBatch">
+        insert into product_order_item 
+            (
+            <include refid="Base_Column_List_No_Id"/>
+            )
+        values
+        <foreach collection="orderItemList" item="item" index="index" separator=",">
+            (
+            #{item.productOrderId}
+            #{item.outTradeNo}
+            #{item.productName}
+            #{item.productId}
+            #{item.productImg}
+            #{item.buyNum}
+            #{item.createTime}
+            #{item.totalAmount}
+            #{item.amount}
+            )
+        </foreach>
+    </insert>
 
 </mapper>

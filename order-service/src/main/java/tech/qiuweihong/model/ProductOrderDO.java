@@ -70,7 +70,7 @@ public class ProductOrderDO implements Serializable {
     /**
      * User id
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 0 for not deleted, 1 for deleted

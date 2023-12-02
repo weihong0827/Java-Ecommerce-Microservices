@@ -7,10 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import tech.qiuweihong.Exception.BizException;
 import tech.qiuweihong.config.RabbitMQConfig;
 import tech.qiuweihong.enums.BizCodeEnum;
+import tech.qiuweihong.enums.OrderStatus;
 import tech.qiuweihong.enums.StockTaskStateEnum;
+import tech.qiuweihong.feign.ProductOrderFeign;
 import tech.qiuweihong.mapper.ProductTaskMapper;
 import tech.qiuweihong.model.ProductDO;
 import tech.qiuweihong.mapper.ProductMapper;
@@ -54,6 +58,9 @@ public class ProductServiceImpl  implements ProductService {
 
     @Autowired
     private RabbitMQConfig rabbitMQConfig;
+
+    @Autowired
+    private ProductOrderFeign productOrderFeign;
     @Override
     public Map<String, Object> listProducts(int page, int size) {
         Page<ProductDO> pageInfo = new Page<>(page,size);
@@ -118,6 +125,38 @@ public class ProductServiceImpl  implements ProductService {
         return JsonData.buildSuccess();
 
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public boolean releaseStock(ProductMessage productMessage) {
+        ProductTaskDO taskDO = productTaskMapper.selectOne(new QueryWrapper<ProductTaskDO>().eq("id",productMessage.getTaskId()));
+        if (!taskDO.getLockState().equalsIgnoreCase(StockTaskStateEnum.LOCK.name())){
+            log.warn("Task state no LOCK, State={},message={}",taskDO.getLockState(),productMessage);
+            return true;
+        }
+        ProductDO productDO = productMapper.selectById(taskDO.getProductId());
+        JsonData data = productOrderFeign.queryState(productMessage.getOutTradeNo());
+        if (data.getCode()==0){
+            String state = data.getData().toString();
+            if (OrderStatus.NEW.name().equalsIgnoreCase(state)){
+                log.warn("Order still new, retry");
+                return false;
+            }else if(OrderStatus.PAID.name().equalsIgnoreCase(state)){
+                taskDO.setLockState(StockTaskStateEnum.FINISH.name());
+                int updatedRows = productTaskMapper.update(taskDO,new QueryWrapper<ProductTaskDO>().eq("id",productMessage.getTaskId()));
+                // update stock count
+                productMapper.updateStock(taskDO.getProductId(),taskDO.getBuyNum());
+
+                return true;
+
+            }
+        }
+        taskDO.setLockState(StockTaskStateEnum.CANCEL.name());
+        int updatedRows = productTaskMapper.update(taskDO,new QueryWrapper<ProductTaskDO>().eq("id",productMessage.getTaskId()));
+        productMapper.unlockProductStock(taskDO.getProductId(),taskDO.getBuyNum());
+
+        return true;
     }
 
     private ProductVO beanProcess(ProductDO productDO){

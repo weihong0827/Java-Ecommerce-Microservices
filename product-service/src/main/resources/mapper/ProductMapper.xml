@@ -23,5 +23,14 @@
         update product set lock_stock=#{buy_num}+lock_stock
         where id=#{product_id} and stock-lock_stock>=#{buy_num}
     </update>
+    <update id="unlockProductStock">
+        update product set lock_stock=lock_stock-#{buy_num}
+        where id=#{product_id} and lock_stock>=#{buy_num}
+    </update>
+    <update id="updateStock">
+        update product set lock_stock=lock_stock-#{buy_num} and stock = stock -#{buy_num}
+        where id=#{product_id} and lock_stock>=#{buy_num}
+    </update>
+
 
 </mapper>

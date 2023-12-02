@@ -1,5 +1,6 @@
 package tech.qiuweihong.service;
 
+import tech.qiuweihong.model.OrderMessage;
 import tech.qiuweihong.model.ProductOrderDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import tech.qiuweihong.request.SubmitOrderRequest;
@@ -18,4 +19,6 @@ public interface ProductOrderService {
     JsonData submitOrder(SubmitOrderRequest submitOrderRequest);
 
     String queryProductOrderState(String outTradeNo);
+
+    boolean closeProductOrder(OrderMessage orderMessage);
 }

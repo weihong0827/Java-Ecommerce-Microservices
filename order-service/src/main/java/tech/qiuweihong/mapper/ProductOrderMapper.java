@@ -17,4 +17,5 @@ import java.util.List;
  */
 public interface ProductOrderMapper extends BaseMapper<ProductOrderDO> {
 
+    void updateOrderPayState(@Param("outTradeNo")  String outTradeNo,@Param("newState") String newState,@Param("oldState") String oldState);
 }

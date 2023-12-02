@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.Exception.BizException;
+import tech.qiuweihong.config.RabbitMQConfig;
 import tech.qiuweihong.enums.*;
 import tech.qiuweihong.feign.CouponFeignService;
 import tech.qiuweihong.feign.ProductFeignService;
@@ -13,6 +15,7 @@ import tech.qiuweihong.feign.UserFeignService;
 import tech.qiuweihong.interceptor.LoginInterceptor;
 import tech.qiuweihong.mapper.ProductOrderItemMapper;
 import tech.qiuweihong.model.LoginUser;
+import tech.qiuweihong.model.OrderMessage;
 import tech.qiuweihong.model.ProductOrderDO;
 import tech.qiuweihong.mapper.ProductOrderMapper;
 import tech.qiuweihong.model.ProductOrderItemDO;
@@ -48,6 +51,12 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
     private CouponFeignService couponFeignService;
     @Autowired
     private ProductOrderItemMapper productOrderItemMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private RabbitMQConfig rabbitMQConfig;
     @Override
     public JsonData submitOrder(SubmitOrderRequest submitOrderRequest) {
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
@@ -76,6 +85,10 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
         this.saveProductOrderItems(productOrderDO.getId(),outTradeNo,orderItemVOS);
 
         // Send delay message to close order when payment not successful
+        OrderMessage orderMessage = new OrderMessage();
+        orderMessage.setOutTradeNo(outTradeNo);
+        rabbitTemplate.convertAndSend(rabbitMQConfig.getEventExchange(),rabbitMQConfig.getOrderCloseDelayRoutingKey(),orderMessage);
+
 
         // Create Payment
 
@@ -230,5 +243,29 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
             return productOrderDO.getState();
         }
 
+    }
+
+    @Override
+    public boolean closeProductOrder(OrderMessage orderMessage) {
+        ProductOrderDO productOrderDO = productOrderMapper.selectOne(new QueryWrapper<ProductOrderDO>().eq("out_trade_no",orderMessage.getOutTradeNo()));
+        if (productOrderDO == null) {
+            return true;
+        }
+
+        if (productOrderDO.getState().equalsIgnoreCase(OrderStatus.PAID.name())){
+            return true;
+        }
+
+        // Not paid
+        // Query current payment state TODO
+        boolean payResult = false;
+        if (payResult){
+            productOrderMapper.updateOrderPayState(productOrderDO.getOutTradeNo(),OrderStatus.PAID.name(),OrderStatus.NEW.name());
+            return true;
+        }
+        productOrderMapper.updateOrderPayState(productOrderDO.getOutTradeNo(),OrderStatus.CANCELLED.name(),OrderStatus.NEW.name());
+
+
+        return true;
     }
 }

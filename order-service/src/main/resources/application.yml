@@ -46,6 +46,25 @@ mybatis-plus:
 logging:
   level:
     root: INFO
+
+mqconfig:
+  # delay queue
+  order_close_delay_queue: order.close.delay.queue
+
+  #close queue
+  order_close_queue: order.close.queue
+
+  # Exchange
+  order_event_exchange: order.event.exchange
+
+  #key to enter the delay queue
+  order_close_delay_routing_key: order.close.delay.routing.key
+
+  #key to enter the close queue
+  order_close_routing_key: order.close.routing.key
+
+  #time the message expires in ms
+  ttl: 15000
 seata:
   tx-service-group: ${spring.application.name}-group
   service:

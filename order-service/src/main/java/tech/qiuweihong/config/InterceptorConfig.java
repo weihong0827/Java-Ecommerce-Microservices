@@ -22,7 +22,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 //拦截的路径
                 .addPathPatterns("/api/order/*/**/")
                 //排查不拦截的路径
-                .excludePathPatterns("/api/callback/*/**","/api/order/*/query_state");
+                .excludePathPatterns("/api/callback/*/**","/api/order/*/query_state","/api/order/*/alipay");
     }
 
 }

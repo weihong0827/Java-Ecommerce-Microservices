@@ -1,6 +1,10 @@
 package tech.qiuweihong.controller;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.response.AlipayTradeAppPayResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import tech.qiuweihong.config.AliPayConfig;
+import tech.qiuweihong.config.CallBackUrlConfig;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.ClientType;
 import tech.qiuweihong.enums.OrderPaymentType;
@@ -17,6 +23,8 @@ import tech.qiuweihong.utils.JsonData;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * <p>
@@ -32,6 +40,8 @@ import java.io.IOException;
 public class ProductOrderController {
     @Autowired
     private ProductOrderService productOrderService;
+    @Autowired
+    private CallBackUrlConfig callBackUrlConfig;
     @ApiOperation("Submit Order")
     @PostMapping("")
     public void submitOrder(@ApiParam("order object") @RequestBody SubmitOrderRequest submitOrderRequest, HttpServletResponse response){
@@ -74,6 +84,38 @@ public class ProductOrderController {
         }catch (IOException e){
             log.error("Write HTML error {}",e);
         }
+    }
+
+    @GetMapping("/alipay")
+    public void testAlipay(HttpServletResponse response) throws AlipayApiException, IOException {
+        HashMap<String,String>content = new HashMap<>();
+        String no = UUID.randomUUID().toString();
+        log.info("out trade no:{}",no);
+        content.put("out_trade_no", no);
+        content.put("product_code", "FAST_INSTANT_TRADE_PAY");
+        // order total amount
+        content.put("total_amount", String.valueOf("111.99"));
+        // title
+        content.put("subject", "cup");
+        // description
+        content.put("body", "good cup");
+        // Order ttl, when does the user have to made the payment by, 1m-15d, m-min,h-hour, d-day,1c-current day before 2359, no decimals
+        content.put("timeout_express", "5m");
+        AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
+        request.setBizContent(JSON.toJSONString(content));
+        request.setNotifyUrl(callBackUrlConfig.getAlipayCallbackUrl());
+        request.setReturnUrl(callBackUrlConfig.getAlipaySuccessReturnUrl());
+        AlipayTradeAppPayResponse tradeAppPayResponse= AliPayConfig.getInstance().pageExecute(request);
+        if (tradeAppPayResponse.isSuccess()){
+            String form = tradeAppPayResponse.getBody();
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(form);
+            response.getWriter().flush();
+            response.getWriter().close();
+
+        }
+
+
     }
 }
 

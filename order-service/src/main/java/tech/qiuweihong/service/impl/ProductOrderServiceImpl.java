@@ -3,6 +3,7 @@ package tech.qiuweihong.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Order;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.Exception.BizException;
 import tech.qiuweihong.component.PaymentFactory;
 import tech.qiuweihong.config.RabbitMQConfig;
+import tech.qiuweihong.constants.TimeConstant;
 import tech.qiuweihong.enums.*;
 import tech.qiuweihong.feign.CouponFeignService;
 import tech.qiuweihong.feign.ProductFeignService;
@@ -32,6 +34,7 @@ import tech.qiuweihong.utils.CommonUtils;
 import tech.qiuweihong.utils.JsonData;
 import tech.qiuweihong.vo.CouponRecordVO;
 import tech.qiuweihong.vo.OrderItemVO;
+import tech.qiuweihong.vo.PayInfoVO;
 import tech.qiuweihong.vo.ProductOrderAddressVO;
 
 import java.math.BigDecimal;
@@ -103,8 +106,17 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
 
 
         // Create Payment
+        PayInfoVO payInfoVO = new PayInfoVO(productOrderDO.getOutTradeNo(),productOrderDO.getPayAmount(),
+                OrderPaymentType.valueOf(submitOrderRequest.getPayType()),
+                ClientType.valueOf(submitOrderRequest.getClientType()),
+                "order out trade no","", TimeConstant.ORDER_PAY_TIMEOUT_MILLS);
+        String payResult = paymentFactory.pay(payInfoVO);
+        if (StringUtil.isNotBlank(payResult)){
+            return JsonData.buildSuccess(payResult);
+        }else{
+            return JsonData.buildResult(BizCodeEnum.PAY_ORDER_FAIL);
+        }
 
-        return null;
     }
 
     private void saveProductOrderItems(Long id, String outTradeNo, List<OrderItemVO> orderItemVOS) {
@@ -261,17 +273,24 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
     public boolean closeProductOrder(OrderMessage orderMessage) {
         ProductOrderDO productOrderDO = productOrderMapper.selectOne(new QueryWrapper<ProductOrderDO>().eq("out_trade_no",orderMessage.getOutTradeNo()));
         if (productOrderDO == null) {
+            // Order not exist
             return true;
         }
 
         if (productOrderDO.getState().equalsIgnoreCase(OrderStatus.PAID.name())){
+            // already paid
             return true;
         }
 
         // Not paid
-        // Query current payment state TODO
-        boolean payResult = false;
-        if (payResult){
+        // Query current payment state
+        PayInfoVO payInfoVO = new PayInfoVO();
+        payInfoVO.setPaymentType(OrderPaymentType.valueOf(productOrderDO.getPayType()));
+        payInfoVO.setOutTradeNo(orderMessage.getOutTradeNo());
+        String payResult = paymentFactory.queryPaymentStatus(payInfoVO);
+
+
+        if (!payResult.isBlank()){
             productOrderMapper.updateOrderPayState(productOrderDO.getOutTradeNo(),OrderStatus.PAID.name(),OrderStatus.NEW.name());
             return true;
         }

@@ -2,7 +2,10 @@ package tech.qiuweihong.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayConfig;
+import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeWapPayResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +88,22 @@ public class AlipayStrategy implements PayStrategy{
 
     @Override
     public String queryPaymentStatus(PayInfoVO payInfoVO) {
-        return PayStrategy.super.queryPaymentStatus(payInfoVO);
+        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+        HashMap<String,String> content = new HashMap<>();
+
+        content.put("out_trade_no",payInfoVO.getOutTradeNo());
+        request.setBizContent(JSON.toJSONString(content));
+        AlipayTradeQueryResponse response = null;
+        try {
+            response = AliPayConfig.getInstance().execute(request);
+        } catch (AlipayApiException e) {
+            log.error("Alipay query error:{}",e);
+
+        }
+        if (response.isSuccess()){
+            return response.getTradeStatus();
+        }else{
+            return "";
+        }
     }
 }

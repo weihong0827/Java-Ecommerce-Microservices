@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Order;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.Exception.BizException;
@@ -282,6 +283,17 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
 
     @Override
     public JsonData handleOrderCallbackMsg(OrderPaymentType orderPaymentType, Map<String, String> paramMap) {
-        return null;
+
+        if (orderPaymentType == OrderPaymentType.ALIPAY){
+            String out_trade_no = paramMap.get("out_trade_no");
+            String trade_status = paramMap.get("trade_status");
+            if (trade_status.equalsIgnoreCase("TRADE_SUCCESS")){
+                productOrderMapper.updateOrderPayState(out_trade_no,OrderStatus.PAID.name(),OrderStatus.NEW.name());
+                return JsonData.buildSuccess();
+            }
+        }else if(orderPaymentType == OrderPaymentType.WECHAT) {
+            // TODO Wechat pay
+        }
+        return JsonData.buildResult(BizCodeEnum.PAY_ORDER_CALLBACK_NOT_SUCCESS);
     }
 }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.Exception.BizException;
+import tech.qiuweihong.component.PaymentFactory;
 import tech.qiuweihong.config.RabbitMQConfig;
 import tech.qiuweihong.enums.*;
 import tech.qiuweihong.feign.CouponFeignService;
@@ -57,6 +58,15 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
 
     @Autowired
     private RabbitMQConfig rabbitMQConfig;
+
+    @Autowired
+    private PaymentFactory paymentFactory;
+    /**
+     * Submits an order with the given order request.
+     *
+     * @param submitOrderRequest A SubmitOrderRequest object containing order information.
+     * @return A JsonData object representing the order result.
+     */
     @Override
     public JsonData submitOrder(SubmitOrderRequest submitOrderRequest) {
         LoginUser loginUser = LoginInterceptor.threadLocal.get();

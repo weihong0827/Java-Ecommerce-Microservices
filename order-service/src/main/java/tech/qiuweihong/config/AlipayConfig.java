@@ -4,11 +4,9 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-public class AliPayConfig {
+public class AlipayConfig {
     static Dotenv dotenv = Dotenv.load();
 
     public static final String APPID = dotenv.get("ALIPAY_APPID");
@@ -24,7 +22,7 @@ public class AliPayConfig {
 
     public static final String GATEWAY_URL = dotenv.get("ALIPAY_GATEWAY");
 
-    private AliPayConfig(){
+    private AlipayConfig(){
 
     }
 
@@ -33,7 +31,7 @@ public class AliPayConfig {
     public static AlipayClient getInstance(){
 
         if (instance==null){
-            synchronized (AliPayConfig.class){
+            synchronized (AlipayConfig.class){
                 if (instance==null){
                     instance = new DefaultAlipayClient(GATEWAY_URL,APPID,APP_PRI_KEY,FORMAT,CHARSET,ALIPAY_PUB_KEY,SIGN_TYPE);
                 }

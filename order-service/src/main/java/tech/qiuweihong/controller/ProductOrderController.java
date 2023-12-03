@@ -3,9 +3,7 @@ package tech.qiuweihong.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeWapPayResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import tech.qiuweihong.config.AliPayConfig;
+import tech.qiuweihong.config.AlipayConfig;
 import tech.qiuweihong.config.CallBackUrlConfig;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.ClientType;
@@ -107,7 +105,7 @@ public class ProductOrderController {
         request.setBizContent(JSON.toJSONString(content));
         request.setNotifyUrl(callBackUrlConfig.getAlipayCallbackUrl());
         request.setReturnUrl(callBackUrlConfig.getAlipaySuccessReturnUrl());
-        AlipayTradeWapPayResponse tradeAppPayResponse= AliPayConfig.getInstance().pageExecute(request);
+        AlipayTradeWapPayResponse tradeAppPayResponse= AlipayConfig.getInstance().pageExecute(request);
         if (tradeAppPayResponse.isSuccess()){
             String form = tradeAppPayResponse.getBody();
             response.setContentType("text/html;charset=UTF-8");

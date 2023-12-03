@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -277,5 +278,10 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
 
 
         return true;
+    }
+
+    @Override
+    public JsonData handleOrderCallbackMsg(OrderPaymentType orderPaymentType, Map<String, String> paramMap) {
+        return null;
     }
 }

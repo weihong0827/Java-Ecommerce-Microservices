@@ -75,4 +75,5 @@ seata:
 
 alipay:
   success_return_url: https://weihong.tech
-  callback_url: https://weihong.tech
+  callback_url: http://liberal-sole-urgently.ngrok-free.app/api/order/v1/callback/alipay
+

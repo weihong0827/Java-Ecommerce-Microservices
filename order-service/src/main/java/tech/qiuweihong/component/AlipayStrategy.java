@@ -2,7 +2,6 @@ package tech.qiuweihong.component;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayConfig;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeQueryResponse;
@@ -11,14 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.qiuweihong.Exception.BizException;
-import tech.qiuweihong.config.AliPayConfig;
+import tech.qiuweihong.config.AlipayConfig;
 import tech.qiuweihong.config.CallBackUrlConfig;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.ClientType;
 import tech.qiuweihong.vo.PayInfoVO;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -65,7 +63,7 @@ public class AlipayStrategy implements PayStrategy{
                 request.setBizContent(JSON.toJSONString(content));
                 request.setNotifyUrl(callBackUrlConfig.getAlipayCallbackUrl());
                 request.setReturnUrl(callBackUrlConfig.getAlipaySuccessReturnUrl());
-                AlipayTradeWapPayResponse tradeAppPayResponse= AliPayConfig.getInstance().pageExecute(request);
+                AlipayTradeWapPayResponse tradeAppPayResponse= AlipayConfig.getInstance().pageExecute(request);
                 if (tradeAppPayResponse.isSuccess()){
                     form = tradeAppPayResponse.getBody();
                 }else {
@@ -95,7 +93,7 @@ public class AlipayStrategy implements PayStrategy{
         request.setBizContent(JSON.toJSONString(content));
         AlipayTradeQueryResponse response = null;
         try {
-            response = AliPayConfig.getInstance().execute(request);
+            response = AlipayConfig.getInstance().execute(request);
         } catch (AlipayApiException e) {
             log.error("Alipay query error:{}",e);
 

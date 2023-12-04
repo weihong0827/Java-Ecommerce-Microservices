@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeWapPayResponse;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import tech.qiuweihong.utils.JsonData;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -72,6 +74,17 @@ public class ProductOrderController {
     public JsonData queryProductOrderStatus(@RequestParam("out_trade_no")String outTradeNo){
         String state = productOrderService.queryProductOrderState(outTradeNo);
         return StringUtils.isBlank(state)?JsonData.buildResult(BizCodeEnum.ORDER_CONFIRM_NOT_EXIST):JsonData.buildSuccess(state);
+    }
+
+    @ApiOperation("Paginated personal order check")
+    @GetMapping("/")
+    public JsonData pageOrderList(
+            @ApiParam(value="Current page")  @RequestParam(value = "page",defaultValue = "1") int page,
+            @ApiParam(value="Page size") @RequestParam(value="size",defaultValue = "20") int size,
+            @ApiParam(value="Order State") @RequestParam(value="state",required = false) String state
+    ){
+        Map<String,Object> details = productOrderService.detail(page, size,state);
+        return JsonData.buildSuccess(details);
     }
 
     private void writeData(HttpServletResponse response, JsonData data) {

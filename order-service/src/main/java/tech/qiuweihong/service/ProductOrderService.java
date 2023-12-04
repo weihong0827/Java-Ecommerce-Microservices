@@ -26,4 +26,6 @@ public interface ProductOrderService {
     boolean closeProductOrder(OrderMessage orderMessage);
 
     JsonData handleOrderCallbackMsg(OrderPaymentType orderPaymentType, Map<String, String> paramMap);
+
+    Map<String, Object> detail(int page, int size, String state);
 }

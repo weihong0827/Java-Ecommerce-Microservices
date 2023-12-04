@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import tech.qiuweihong.vo.OrderItemVO;
 
 /**
  * <p>
@@ -91,6 +94,7 @@ public class ProductOrderDO implements Serializable {
      * Delivery address stored in JSON
      */
     private String receiverAddress;
+
 
 
 }

@@ -3,10 +3,13 @@ package tech.qiuweihong.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Order;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.qiuweihong.Exception.BizException;
 import tech.qiuweihong.component.PaymentFactory;
@@ -32,16 +35,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import tech.qiuweihong.utils.CommonUtils;
 import tech.qiuweihong.utils.JsonData;
-import tech.qiuweihong.vo.CouponRecordVO;
-import tech.qiuweihong.vo.OrderItemVO;
-import tech.qiuweihong.vo.PayInfoVO;
-import tech.qiuweihong.vo.ProductOrderAddressVO;
+import tech.qiuweihong.vo.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -319,5 +316,48 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
             // TODO Wechat pay
         }
         return JsonData.buildResult(BizCodeEnum.PAY_ORDER_CALLBACK_NOT_SUCCESS);
+    }
+
+    /**
+     * Retrieves the detailed information of product orders for a specific user.
+     *
+     * @param page the page number of the result set
+     * @param size the number of records per page
+     * @param state the state of the product orders to filter by (optional)
+     *
+     * @return a map containing the details of the product orders
+     */
+    @Override
+    public Map<String, Object> detail(int page, int size, String state) {
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        Page<ProductOrderDO> pageInfo = new Page<>(page,size);
+        IPage<ProductOrderDO> orderDBPage = null;
+        if (StringUtil.isNotBlank(state)){
+            orderDBPage = productOrderMapper.selectPage(pageInfo,new QueryWrapper<ProductOrderDO>().eq("user_id",loginUser.getId()).eq("state",state));
+        }else{
+            orderDBPage = productOrderMapper.selectPage(pageInfo,new QueryWrapper<ProductOrderDO>().eq("user_id",loginUser.getId()));
+        }
+
+        List<ProductOrderDO> orderDOList = orderDBPage.getRecords();
+        List<ProductOrderVO> orderVOList = orderDOList.stream().map(productOrderDO -> {
+            List<ProductOrderItemDO> orderItemDOList = productOrderItemMapper.selectList(new QueryWrapper<ProductOrderItemDO>().eq("product_order_id",productOrderDO.getId()));
+
+            List<OrderItemVO> orderItemVOList = orderItemDOList.stream().map(item->{
+                OrderItemVO itemVO = new OrderItemVO();
+                BeanUtils.copyProperties(item,itemVO);
+                return itemVO;
+            }).collect(Collectors.toList());
+            ProductOrderVO productOrderVO = new ProductOrderVO();
+            BeanUtils.copyProperties(productOrderDO,productOrderVO);
+            productOrderVO.setOrderItemVOList(orderItemVOList);
+            return productOrderVO;
+        }
+        ).collect(Collectors.toList());
+
+        Map<String,Object> pageMap = new HashMap<>();
+        pageMap.put("total_record",orderDBPage.getTotal());
+        pageMap.put("total_page",orderDBPage.getPages());
+        pageMap.put("current_page",orderVOList);
+        return pageMap;
     }
 }

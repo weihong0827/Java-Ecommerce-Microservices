@@ -80,6 +80,12 @@ services:
     expose:
       - 8091
       - 7091
+  sentinel:
+    image: bladex/sentinel-dashboard:latest
+    ports:
+      - "8858:8858"
+
+
 
 
 volumes:

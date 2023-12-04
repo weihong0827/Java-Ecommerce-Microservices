@@ -1,0 +1,62 @@
+#server:
+#  port: 8889
+#
+#spring:
+#  application:
+#    name: api-gateway
+#  cloud:
+#    # service discovery address
+#    nacos:
+#      discovery:
+#        server-addr: 192.168.0.70:8848
+#
+#    gateway:
+#      routes: # Array
+#        - id: user-service  #route identifier
+#          uri: lb://user-service  # lb:load balance, route from nacos
+#          order: 2 # priority, lower the number higher the priority
+#
+#          predicates: #Decides on which route to be forwarded, path universally include a XXX-server
+#            - Path=/user-server/**
+#          filters: # filter
+#            - StripPrefix=1  #remove first prefix and send to subsequent routes
+#
+#        - id: coupon-service  #route identifier
+#          uri: lb://coupon-service  # lb:load balance, route from nacos
+#          order: 3 # priority, lower the number higher the priority
+#
+#          predicates: #Decides on which route to be forwarded, path universally include a XXX-server
+#            - Path=/coupon-server/**
+#          filters: # filter
+#            - StripPrefix=1  #remove first prefix and send to subsequent routes
+#
+#        - id: order-service  #route identifier
+#          uri: lb://order-service  # lb:load balance, route from nacos
+#          order: 3 # priority, lower the number higher the priority
+#
+#          predicates: #Decides on which route to be forwarded, path universally include a XXX-server
+#            - Path=/order-server/**
+#          filters: # filter
+#            - StripPrefix=1  #remove first prefix and send to subsequent routes
+#
+#        - id: product-service  #route identifier
+#          uri: lb://product-service  # lb:load balance, route from nacos
+#          order: 1 # priority, lower the number higher the priority
+#
+#          predicates: #Decides on which route to be forwarded, path universally include a XXX-server
+#            - Path=/product-server/**
+#          filters: # filter
+#            - StripPrefix=1  #remove first prefix and send to subsequent routes
+#      #discover nacos configs
+#      discovery:
+#        locator:
+#          enabled: true
+#
+#
+#
+## Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above
+#
+#logging:
+#  level:
+#    root: INFO
+#

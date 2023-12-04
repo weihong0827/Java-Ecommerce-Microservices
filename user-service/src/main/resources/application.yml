@@ -1,78 +1,78 @@
-server:
-  port: 9001
-
-spring:
-  application:
-    name: user-service
-  cloud:
-    # service discovery address
-    nacos:
-      discovery:
-        server-addr: ${NACOS_HOST}:8848
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: 5672
-    virtual-host: /
-    password: ${RABBITMQ_PASSWORD}
-    username: ${RABBITMQ_USER}
-    listener:
-      simple:
-        acknowledge-mode: manual
-  # Database Configuration
-  datasource:
-
-#    url: ${DATABASE_URL}
+#server:
+#  port: 9001
+#
+#spring:
+#  application:
+#    name: user-service
+#  cloud:
+#    # service discovery address
+#    nacos:
+#      discovery:
+#        server-addr: ${NACOS_HOST}:8848
+#  rabbitmq:
+#    host: ${RABBITMQ_HOST}
+#    port: 5672
+#    virtual-host: /
+#    password: ${RABBITMQ_PASSWORD}
+#    username: ${RABBITMQ_USER}
+#    listener:
+#      simple:
+#        acknowledge-mode: manual
+#  # Database Configuration
+#  datasource:
+#
+##    url: ${DATABASE_URL}
+##    username: ${DATABASE_USERNAME}
+##    password: ${DATABASE_PASSWORD}
+#    #driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:${DATABASE_SCHEME}://${DATABASE_HOST}:${DATABASE_PORT}/Users?serverTimezone=UTC  # JDBC URL for MySQL
 #    username: ${DATABASE_USERNAME}
 #    password: ${DATABASE_PASSWORD}
-    #driver-class-name: com.mysql.cj.jdbc.Driver
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:${DATABASE_SCHEME}://${DATABASE_HOST}:${DATABASE_PORT}/Users?serverTimezone=UTC  # JDBC URL for MySQL
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-
-
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
-
-  mail:
-    host: ${MAIL_HOST}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-        mail:
-            starttls:
-                enable: true
-                required: true
-            ssl:
-                enable: true
-            default-encoding: UTF-8
-
-
-
-# Configure MyBatis-Plus to print SQL logs
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-# configure aws s3
-aws:
-  s3:
-    bucket-name: java-ecommerce
-    region: ap-southeast-1
-
-
-# Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above
-
-logging:
-  level:
-    root: INFO
-
-seata:
-  tx-service-group: user-service-group
-  service:
-    grouplist:
-      ecommerce: ${SEATA_HOST}:8091
-    vgroup-mapping:
-      user-service-group: ecommerce
+#
+#
+#  redis:
+#    host: ${REDIS_HOST}
+#    port: ${REDIS_PORT}
+#    password: ${REDIS_PASSWORD}
+#
+#  mail:
+#    host: ${MAIL_HOST}
+#    username: ${MAIL_USERNAME}
+#    password: ${MAIL_PASSWORD}
+#    properties:
+#        mail:
+#            starttls:
+#                enable: true
+#                required: true
+#            ssl:
+#                enable: true
+#            default-encoding: UTF-8
+#
+#
+#
+## Configure MyBatis-Plus to print SQL logs
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#
+## configure aws s3
+#aws:
+#  s3:
+#    bucket-name: java-ecommerce
+#    region: ap-southeast-1
+#
+#
+## Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above
+#
+#logging:
+#  level:
+#    root: INFO
+#
+#seata:
+#  tx-service-group: user-service-group
+#  service:
+#    grouplist:
+#      ecommerce: ${SEATA_HOST}:8091
+#    vgroup-mapping:
+#      user-service-group: ecommerce

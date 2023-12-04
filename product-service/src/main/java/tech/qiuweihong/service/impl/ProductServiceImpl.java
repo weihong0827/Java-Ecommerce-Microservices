@@ -145,8 +145,6 @@ public class ProductServiceImpl  implements ProductService {
             }else if(OrderStatus.PAID.name().equalsIgnoreCase(state)){
                 taskDO.setLockState(StockTaskStateEnum.FINISH.name());
                 int updatedRows = productTaskMapper.update(taskDO,new QueryWrapper<ProductTaskDO>().eq("id",productMessage.getTaskId()));
-                // update stock count
-                productMapper.updateStock(taskDO.getProductId(),taskDO.getBuyNum());
 
                 return true;
 

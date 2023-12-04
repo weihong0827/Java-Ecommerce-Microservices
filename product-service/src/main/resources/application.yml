@@ -1,60 +1,60 @@
-server:
-  port: 9003
-
-spring:
-  application:
-    name: product-service
-  cloud:
-    # service discovery address
-    nacos:
-      discovery:
-        server-addr: ${NACOS_HOST}:8848
-
-  # Database Configuration
-  datasource:
-    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5432/Product?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    #driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:${DATABASE_SCHEME}://${DATABASE_HOST}:${DATABASE_PORT}/Product?serverTimezone=UTC  # JDBC URL for MySQL
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
-
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: 5672
-    virtual-host: /
-    password: ${RABBITMQ_PASSWORD}
-    username: ${RABBITMQ_USER}
-    listener:
-      simple:
-        acknowledge-mode: manual
-
-# Configure MyBatis-Plus to print SQL logs
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-# Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above
-
-logging:
-  level:
-    root: INFO
-mqconfig:
-  stock_release_delay_queue: stock.release.delay.queue
-
-  stock_release_queue: stock.release.queue
-
-  stock_event_exchange: stock.event.exchange
-
-  stock_release_delay_routing_key: stock.release.delay.routing.key
-
-  stock_release_routing_key: stock.release.routing.key
-
-  ttl: 360000
+#server:
+#  port: 9003
+#
+#spring:
+#  application:
+#    name: product-service
+#  cloud:
+#    # service discovery address
+#    nacos:
+#      discovery:
+#        server-addr: ${NACOS_HOST}:8848
+#
+#  # Database Configuration
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+##    url: jdbc:postgresql://localhost:5432/Product?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+#    #driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:${DATABASE_SCHEME}://${DATABASE_HOST}:${DATABASE_PORT}/Product?serverTimezone=UTC  # JDBC URL for MySQL
+#    username: ${DATABASE_USERNAME}
+#    password: ${DATABASE_PASSWORD}
+#
+#  redis:
+#    host: ${REDIS_HOST}
+#    port: ${REDIS_PORT}
+#    password: ${REDIS_PASSWORD}
+#
+#
+#  rabbitmq:
+#    host: ${RABBITMQ_HOST}
+#    port: 5672
+#    virtual-host: /
+#    password: ${RABBITMQ_PASSWORD}
+#    username: ${RABBITMQ_USER}
+#    listener:
+#      simple:
+#        acknowledge-mode: manual
+#
+## Configure MyBatis-Plus to print SQL logs
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#
+#
+## Set log level, ERROR/WARN/INFO/DEBUG, default is to show only INFO and above
+#
+#logging:
+#  level:
+#    root: INFO
+#mqconfig:
+#  stock_release_delay_queue: stock.release.delay.queue
+#
+#  stock_release_queue: stock.release.queue
+#
+#  stock_event_exchange: stock.event.exchange
+#
+#  stock_release_delay_routing_key: stock.release.delay.routing.key
+#
+#  stock_release_routing_key: stock.release.routing.key
+#
+#  ttl: 360000

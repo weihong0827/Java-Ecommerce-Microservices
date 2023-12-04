@@ -21,6 +21,7 @@ import tech.qiuweihong.enums.OrderPaymentType;
 import tech.qiuweihong.request.RepayOrderRequest;
 import tech.qiuweihong.request.SubmitOrderRequest;
 import tech.qiuweihong.service.ProductOrderService;
+import tech.qiuweihong.utils.CommonUtils;
 import tech.qiuweihong.utils.JsonData;
 
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +68,7 @@ public class ProductOrderController {
 
         }else{
             log.error("build order failed {}",data.toString());
+            CommonUtils.sendJsonMessage(response,data);
         }
 
     }
@@ -92,6 +94,7 @@ public class ProductOrderController {
 
         }else{
             log.error("repay order failed {}",data.toString());
+            CommonUtils.sendJsonMessage(response,data);
         }
 
     }

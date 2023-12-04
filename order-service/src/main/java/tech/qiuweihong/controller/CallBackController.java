@@ -41,7 +41,7 @@ public class CallBackController {
                 }
             }
         }catch (AlipayApiException e){
-            log.info("Alipay signature verification error:{} oarams:{}",e,paramMap);
+            log.info("Alipay signature verification error:{} params:{}",e,paramMap);
         }
 
         return "failure";

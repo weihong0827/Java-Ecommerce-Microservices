@@ -13,4 +13,6 @@ public class CacheKey {
      */
     public static final String CartCodeKey = "code:%s";
 
+    public static final String OrderKey = "order:submit:%s";
+
 }

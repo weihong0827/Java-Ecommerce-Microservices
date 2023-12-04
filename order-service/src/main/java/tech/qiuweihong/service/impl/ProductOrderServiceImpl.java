@@ -11,10 +11,14 @@ import org.junit.jupiter.api.Order;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.transaction.annotation.Transactional;
 import tech.qiuweihong.Exception.BizException;
 import tech.qiuweihong.component.PaymentFactory;
 import tech.qiuweihong.config.RabbitMQConfig;
+import tech.qiuweihong.constants.CacheKey;
 import tech.qiuweihong.constants.TimeConstant;
 import tech.qiuweihong.enums.*;
 import tech.qiuweihong.feign.CouponFeignService;
@@ -61,6 +65,8 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
 
     @Autowired
     private PaymentFactory paymentFactory;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
     /**
      * Submits an order with the given order request.
      *
@@ -71,6 +77,19 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
     @Transactional
     public JsonData submitOrder(SubmitOrderRequest submitOrderRequest) {
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        String orderToken = submitOrderRequest.getToken();
+        if (StringUtil.isBlank(orderToken)){
+            throw new BizException(BizCodeEnum.ORDER_CONFIRM_TOKEN_NOT_EXIST);
+        }
+        // Check token and delete token
+        String script = "if redis.call('get',KEYS[1])==ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
+        Long result = redisTemplate.execute(new DefaultRedisScript<>(script,Long.class),
+                Arrays.asList(String.format(CacheKey.OrderKey,loginUser.getId())));
+        if (result==0L){
+            throw new BizException(BizCodeEnum.ORDER_CONFIRM_TOKEN_EQUAL_FAIL);
+        }
+
+
         String outTradeNo = CommonUtils.getStringNumRandom(32);
         ProductOrderAddressVO addressVO = this.getUserAddress(submitOrderRequest.getAddressId());
         log.info("address detail:{}",addressVO);

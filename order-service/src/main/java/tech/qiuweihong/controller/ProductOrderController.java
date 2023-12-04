@@ -11,13 +11,18 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import tech.qiuweihong.config.AlipayConfig;
 import tech.qiuweihong.config.CallBackUrlConfig;
+import tech.qiuweihong.constants.CacheKey;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.ClientType;
 import tech.qiuweihong.enums.OrderPaymentType;
+import tech.qiuweihong.interceptor.LoginInterceptor;
+import tech.qiuweihong.model.LoginUser;
 import tech.qiuweihong.request.RepayOrderRequest;
 import tech.qiuweihong.request.SubmitOrderRequest;
 import tech.qiuweihong.service.ProductOrderService;
@@ -29,6 +34,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -46,6 +52,9 @@ public class ProductOrderController {
     private ProductOrderService productOrderService;
     @Autowired
     private CallBackUrlConfig callBackUrlConfig;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     @ApiOperation("Submit Order")
     @PostMapping("")
     public void submitOrder(@ApiParam("order object") @RequestBody SubmitOrderRequest submitOrderRequest, HttpServletResponse response){
@@ -70,7 +79,6 @@ public class ProductOrderController {
             log.error("build order failed {}",data.toString());
             CommonUtils.sendJsonMessage(response,data);
         }
-
     }
     @ApiOperation("Repay")
     @PostMapping("/repay")
@@ -98,6 +106,17 @@ public class ProductOrderController {
         }
 
     }
+    @ApiOperation("Get Submit Order token")
+    @GetMapping("get_token")
+    public JsonData get_token(){
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+        String key = String.format(CacheKey.OrderKey,loginUser.getId());
+        String token = CommonUtils.getStringNumRandom(32);
+        redisTemplate.opsForValue().set(key,token, 30,TimeUnit.MINUTES);
+        return JsonData.buildSuccess(token);
+
+    }
+
     @ApiOperation("Query order status")
     @GetMapping("/query_state")
     public JsonData queryProductOrderStatus(@RequestParam("out_trade_no")String outTradeNo){

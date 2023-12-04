@@ -4,6 +4,7 @@ import tech.qiuweihong.enums.OrderPaymentType;
 import tech.qiuweihong.model.OrderMessage;
 import tech.qiuweihong.model.ProductOrderDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.qiuweihong.request.RepayOrderRequest;
 import tech.qiuweihong.request.SubmitOrderRequest;
 import tech.qiuweihong.utils.JsonData;
 
@@ -28,4 +29,6 @@ public interface ProductOrderService {
     JsonData handleOrderCallbackMsg(OrderPaymentType orderPaymentType, Map<String, String> paramMap);
 
     Map<String, Object> detail(int page, int size, String state);
+
+    JsonData repay(RepayOrderRequest repayOrderRequest);
 }

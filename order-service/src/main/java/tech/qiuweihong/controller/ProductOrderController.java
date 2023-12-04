@@ -18,6 +18,7 @@ import tech.qiuweihong.config.CallBackUrlConfig;
 import tech.qiuweihong.enums.BizCodeEnum;
 import tech.qiuweihong.enums.ClientType;
 import tech.qiuweihong.enums.OrderPaymentType;
+import tech.qiuweihong.request.RepayOrderRequest;
 import tech.qiuweihong.request.SubmitOrderRequest;
 import tech.qiuweihong.service.ProductOrderService;
 import tech.qiuweihong.utils.JsonData;
@@ -66,6 +67,31 @@ public class ProductOrderController {
 
         }else{
             log.error("build order failed {}",data.toString());
+        }
+
+    }
+    @ApiOperation("Repay")
+    @PostMapping("/repay")
+    public void repay(@ApiParam("order object") @RequestBody RepayOrderRequest repayOrderRequest, HttpServletResponse response){
+        JsonData data = productOrderService.repay(repayOrderRequest);
+        if (data.getCode()==0){
+            String client = repayOrderRequest.getClientType();
+            String payType = repayOrderRequest.getPayType();
+            if (payType.equalsIgnoreCase(OrderPaymentType.ALIPAY.name())){
+                log.info("Build order success {}",repayOrderRequest.toString());
+                if (client.equalsIgnoreCase(ClientType.WEB.name())){
+                    writeData(response,data);
+                } else if (client.equalsIgnoreCase(ClientType.APP.name())) {
+
+                    // TODO
+                }
+            } else if (payType.equalsIgnoreCase(OrderPaymentType.WECHAT.name())) {
+                // TODO
+
+            }
+
+        }else{
+            log.error("repay order failed {}",data.toString());
         }
 
     }

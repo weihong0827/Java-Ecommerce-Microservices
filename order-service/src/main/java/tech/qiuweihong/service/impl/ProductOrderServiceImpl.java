@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import tech.qiuweihong.Exception.BizException;
 import tech.qiuweihong.component.PaymentFactory;
 import tech.qiuweihong.config.RabbitMQConfig;
@@ -26,10 +27,7 @@ import tech.qiuweihong.model.OrderMessage;
 import tech.qiuweihong.model.ProductOrderDO;
 import tech.qiuweihong.mapper.ProductOrderMapper;
 import tech.qiuweihong.model.ProductOrderItemDO;
-import tech.qiuweihong.request.LockCouponRecordRequest;
-import tech.qiuweihong.request.LockProductRequest;
-import tech.qiuweihong.request.OrderItemRequest;
-import tech.qiuweihong.request.SubmitOrderRequest;
+import tech.qiuweihong.request.*;
 import tech.qiuweihong.service.ProductOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -70,6 +68,7 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
      * @return A JsonData object representing the order result.
      */
     @Override
+    @Transactional
     public JsonData submitOrder(SubmitOrderRequest submitOrderRequest) {
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
         String outTradeNo = CommonUtils.getStringNumRandom(32);
@@ -359,5 +358,40 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
         pageMap.put("total_page",orderDBPage.getPages());
         pageMap.put("current_page",orderVOList);
         return pageMap;
+    }
+
+    @Override
+    @Transactional
+    public JsonData repay(RepayOrderRequest repayOrderRequest) {
+        LoginUser loginUser = LoginInterceptor.threadLocal.get();
+
+        ProductOrderDO productOrderDO = productOrderMapper.selectOne(new QueryWrapper<ProductOrderDO>().eq("out_trade_no",repayOrderRequest.getOutTradeNo()).eq("user_id",loginUser.getId()));
+        if (productOrderDO == null) {
+            return JsonData.buildResult(BizCodeEnum.PAY_ORDER_NOT_EXIST);
+        }
+
+        if(!productOrderDO.getState().equalsIgnoreCase(OrderStatus.NEW.name())){
+            return JsonData.buildResult(BizCodeEnum.PAY_ORDER_STATE_ERROR);
+        }
+        long orderLiveTime = System.currentTimeMillis() - productOrderDO.getCreateTime().getTime();
+        orderLiveTime = orderLiveTime +70*1000;
+        if (orderLiveTime>TimeConstant.ORDER_PAY_TIMEOUT_MILLS){
+            return JsonData.buildResult(BizCodeEnum.PAY_ORDER_PAY_TIMEOUT);
+        }
+        long timeout = TimeConstant.ORDER_PAY_TIMEOUT_MILLS - orderLiveTime;
+        PayInfoVO payInfoVO = new PayInfoVO(productOrderDO.getOutTradeNo(),productOrderDO.getPayAmount(),
+                OrderPaymentType.valueOf(repayOrderRequest.getPayType().toUpperCase()),
+                ClientType.valueOf(repayOrderRequest.getClientType().toUpperCase()),
+                "order out trade no","", timeout);
+
+        // TODO Update payment type and client type for the order
+
+        String payResult = paymentFactory.pay(payInfoVO);
+        if (StringUtil.isNotBlank(payResult)){
+            return JsonData.buildSuccess(payResult);
+        }else{
+            return JsonData.buildResult(BizCodeEnum.PAY_ORDER_FAIL);
+        }
+
     }
 }

@@ -64,7 +64,7 @@ mqconfig:
   order_close_routing_key: order.close.routing.key
 
   #time the message expires in ms
-  ttl: 15000
+  ttl: 300000
 seata:
   tx-service-group: ${spring.application.name}-group
   service:
@@ -75,5 +75,5 @@ seata:
 
 alipay:
   success_return_url: https://weihong.tech
-  callback_url: http://liberal-sole-urgently.ngrok-free.app/api/order/v1/callback/alipay
+  callback_url: https://liberal-sole-urgently.ngrok-free.app/api/order/v1/callback/alipay
 

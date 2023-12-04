@@ -1,5 +1,5 @@
 CREATE TABLE banner (
-                        id serial PRIMARY KEY,
+                        id bigserial PRIMARY KEY,
                         img varchar(524) DEFAULT NULL, -- Image
                         url varchar(524) DEFAULT NULL, -- Jump Address
                         weight int DEFAULT NULL -- Weight
@@ -19,8 +19,8 @@ CREATE TABLE product (
                          title varchar(128) DEFAULT NULL, -- Title
                          cover_img varchar(128) DEFAULT NULL, -- Cover Image
                          detail varchar(256) DEFAULT '' , -- Details
-                         old_price decimal(16,2) DEFAULT NULL, -- Old Price
-                         price decimal(16,2) DEFAULT NULL, -- New Price
+                         old_amount decimal(16,2) DEFAULT NULL, -- Old Price
+                         amount decimal(16,2) DEFAULT NULL, -- New Price
                          stock int DEFAULT NULL, -- Stock
                          create_time timestamp DEFAULT NULL, -- Creation Time
                          lock_stock int DEFAULT '0' -- Locked Stock
@@ -29,8 +29,8 @@ CREATE TABLE product (
 COMMENT ON COLUMN product.title IS 'Title';
 COMMENT ON COLUMN product.cover_img IS 'Cover Image';
 COMMENT ON COLUMN product.detail IS 'Details';
-COMMENT ON COLUMN product.old_price IS 'Old Price';
-COMMENT ON COLUMN product.price IS 'New Price';
+COMMENT ON COLUMN product.old_amount IS 'Old Price';
+COMMENT ON COLUMN product.amount IS 'New Price';
 COMMENT ON COLUMN product.stock IS 'Stock';
 COMMENT ON COLUMN product.create_time IS 'Creation Time';
 COMMENT ON COLUMN product.lock_stock IS 'Locked Stock';

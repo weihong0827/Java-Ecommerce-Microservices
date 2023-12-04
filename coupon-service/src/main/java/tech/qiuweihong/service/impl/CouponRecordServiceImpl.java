@@ -90,6 +90,7 @@ public class CouponRecordServiceImpl implements CouponRecordService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public JsonData lockCouponRecord(LockCouponRecordRequest recordRequest) {
         LoginUser loginUser = LoginInterceptor.threadLocal.get();
         String orderOutTradeNo = recordRequest.getOrderOutTradeNo();
@@ -103,6 +104,8 @@ public class CouponRecordServiceImpl implements CouponRecordService {
                 couponTaskDO.setLockState(StockTaskStateEnum.LOCK.name());
                 return couponTaskDO;
         }).collect(Collectors.toList());
+        log.info("Lock coupon record :{}",couponTaskDOS);
+
         int insertRows = couponTaskMapper.insertBatch(couponTaskDOS);
         log.info("Lock coupon record rows={}",updatedRows);
         log.info("Insert coupon task record rows={}",insertRows);

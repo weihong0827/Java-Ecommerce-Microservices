@@ -51,7 +51,7 @@ mqconfig:
   coupon_release_routing_key: coupon.release.routing.key
 
   #time the message expires in ms
-  ttl: 15000
+  ttl: 360000
 
 # Configure MyBatis-Plus to print SQL logs
 mybatis-plus:

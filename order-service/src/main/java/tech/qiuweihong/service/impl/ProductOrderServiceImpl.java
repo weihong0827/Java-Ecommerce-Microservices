@@ -81,7 +81,9 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
 
         List<Long> productIds = submitOrderRequest.getProductList();
         JsonData cartItemData = productFeignService.confirmOrderCartItem(productIds);
+        log.info("Cart items retrieved:{}",cartItemData);
         List<OrderItemVO> orderItemVOS = cartItemData.getData(new TypeReference<>(){});
+        log.info("Cart items retrieved:{}",orderItemVOS);
         if(orderItemVOS==null){
             throw new BizException(BizCodeEnum.ORDER_CONFIRM_CART_ITEM_NOT_EXIST);
         }
@@ -107,8 +109,8 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
 
         // Create Payment
         PayInfoVO payInfoVO = new PayInfoVO(productOrderDO.getOutTradeNo(),productOrderDO.getPayAmount(),
-                OrderPaymentType.valueOf(submitOrderRequest.getPayType()),
-                ClientType.valueOf(submitOrderRequest.getClientType()),
+                OrderPaymentType.valueOf(submitOrderRequest.getPayType().toUpperCase()),
+                ClientType.valueOf(submitOrderRequest.getClientType().toUpperCase()),
                 "order out trade no","", TimeConstant.ORDER_PAY_TIMEOUT_MILLS);
         String payResult = paymentFactory.pay(payInfoVO);
         if (StringUtil.isNotBlank(payResult)){
@@ -130,6 +132,7 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
             productOrderItemDO.setOutTradeNo(outTradeNo);
             productOrderItemDO.setAmount(orderItemVO.getAmount());
             productOrderItemDO.setTotalAmount(orderItemVO.getTotalAmount());
+            productOrderItemDO.setBuyNum(orderItemVO.getBuyNum());
 
             return productOrderItemDO;
         }).collect(Collectors.toList());
@@ -150,7 +153,7 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
         productOrderDO.setTotalAmount(submitOrderRequest.getTotalAmount());
         productOrderDO.setState(OrderStatus.NEW.name());
 
-        productOrderDO.setPayType(OrderPaymentType.valueOf(submitOrderRequest.getPayType()).name());
+        productOrderDO.setPayType(OrderPaymentType.valueOf(submitOrderRequest.getPayType().toUpperCase()).name());
 
 
         productOrderDO.setReceiverAddress(JSON.toJSONString(addressVO));
@@ -196,6 +199,7 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
         if (orderItemVOS!=null){
             for(OrderItemVO orderItemVO :orderItemVOS){
                 BigDecimal itemRealPayAmount = orderItemVO.getTotalAmount();
+                log.info("Item details:{}",orderItemVO);
                 realPayAmount = realPayAmount.add(itemRealPayAmount);
             }
         }
@@ -212,6 +216,7 @@ public class ProductOrderServiceImpl  implements ProductOrderService {
             }
         }
         if (realPayAmount.compareTo(submitOrderRequest.getActualAmount())!=0){
+            log.error("Price Check error, calculated price:{}, given price:{}",realPayAmount,submitOrderRequest.getActualAmount());
             throw new BizException(BizCodeEnum.ORDER_CONFIRM_PRICE_FAIL);
         }
     }

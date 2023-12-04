@@ -21,7 +21,7 @@
         id, product_order_id, out_trade_no, product_id, product_name, product_img, buy_num, create_time, total_amount, amount
     </sql>
     <sql id="Base_Column_List_No_Id">
-        id, product_order_id, out_trade_no, product_id, product_name, product_img, buy_num, create_time, total_amount, amount
+        product_order_id, out_trade_no, product_id, product_name, product_img, buy_num, create_time, total_amount, amount
     </sql>
     <insert id="insertBatch">
         insert into product_order_item 
@@ -31,14 +31,14 @@
         values
         <foreach collection="orderItemList" item="item" index="index" separator=",">
             (
-            #{item.productOrderId}
-            #{item.outTradeNo}
-            #{item.productName}
-            #{item.productId}
-            #{item.productImg}
-            #{item.buyNum}
-            #{item.createTime}
-            #{item.totalAmount}
+            #{item.productOrderId},
+            #{item.outTradeNo},
+            #{item.productId},
+            #{item.productName},
+            #{item.productImg},
+            #{item.buyNum},
+            #{item.createTime},
+            #{item.totalAmount},
             #{item.amount}
             )
         </foreach>

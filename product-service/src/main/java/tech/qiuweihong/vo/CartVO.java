@@ -36,7 +36,15 @@ public class CartVO {
     }
 
     public BigDecimal getDiscountedAmount() {
-        return discountedAmount;
+        BigDecimal amount = new BigDecimal("0");
+        if(this.cartItems!=null){
+            for(CartItemVO cartItemVO:cartItems){
+                BigDecimal itemTotalAmount = cartItemVO.getTotalAmount();
+                amount = amount.add(itemTotalAmount);
+            }
+        }
+
+        return amount;
     }
 
     @JsonProperty("cart_item")

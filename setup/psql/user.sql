@@ -23,7 +23,7 @@ CREATE TABLE "users" (
                          secret VARCHAR(12) DEFAULT NULL
 );
 CREATE TABLE "address" (
-                           "id" SERIAL PRIMARY KEY,
+                           "id" BIGSERIAL PRIMARY KEY,
                            "user_id" BIGINT,
                            "default_status" INTEGER CHECK (default_status IN (0, 1)),
                            "receive_name" VARCHAR(64),

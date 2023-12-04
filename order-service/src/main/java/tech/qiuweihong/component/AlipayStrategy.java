@@ -39,7 +39,7 @@ public class AlipayStrategy implements PayStrategy{
 
         content.put("product_code", "FAST_INSTANT_TRADE_PAY");
         // order total amount
-        content.put("total_amount", String.valueOf(payInfoVO.getPayFee()));
+        content.put("total_amount", payInfoVO.getPayFee().toString());
         // title
         content.put("subject", payInfoVO.getTitle());
         // description
@@ -51,7 +51,7 @@ public class AlipayStrategy implements PayStrategy{
         }
 
         // Order ttl, when does the user have to made the payment by, 1m-15d, m-min,h-hour, d-day,1c-current day before 2359, no decimals
-        content.put("timeout_express", Double.valueOf(timeout)+"m");
+        content.put("timeout_express", Double.valueOf(timeout).intValue()+"m");
 
         ClientType clientType = payInfoVO.getClientType();
         String form = "";

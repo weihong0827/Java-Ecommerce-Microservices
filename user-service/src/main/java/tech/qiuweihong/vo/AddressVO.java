@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Data
 public class AddressVO {
+    private Long id;
     /**
      * User id
      */

@@ -57,4 +57,4 @@ mqconfig:
 
   stock_release_routing_key: stock.release.routing.key
 
-  ttl: 15000
+  ttl: 360000

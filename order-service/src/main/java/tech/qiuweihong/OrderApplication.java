@@ -1,6 +1,6 @@
 package tech.qiuweihong;
 
-import io.github.cdimascio.dotenv.Dotenv;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,10 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableDiscoveryClient
 public class OrderApplication {
     public static void main(String[] args) {
-        Dotenv dotenv = Dotenv.load();
-        dotenv.entries().forEach(entry -> {
-            System.setProperty(entry.getKey(), entry.getValue());
-        });
+
         SpringApplication.run(OrderApplication.class,args);
     }
 
